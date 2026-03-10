@@ -1,21 +1,21 @@
 [
   {
     "cgId": "cg-day001",
-    "title": "Morning At Gate",
+    "title": "校門の朝",
     "heroine": "minori",
     "episodeId": "day-001",
     "imagePath": "assets/images/events/event_day001_school_gate_minori.webp"
   },
   {
     "cgId": "cg-day003",
-    "title": "Silent Library",
+    "title": "静かな図書室",
     "heroine": "toko",
     "episodeId": "day-003",
     "imagePath": "assets/images/events/event_day003_library_toko.webp"
   },
   {
     "cgId": "cg-day005",
-    "title": "Last Serve At Dusk",
+    "title": "夕暮れ最後のサーブ",
     "heroine": "hinata",
     "episodeId": "day-005",
     "imagePath": "assets/images/events/event_day005_schoolyard_hinata.webp"

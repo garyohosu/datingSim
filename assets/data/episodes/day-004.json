@@ -1,7 +1,7 @@
 {
   "id": "day-004",
   "day": 4,
-  "title": "Before Club Practice",
+  "title": "部活前に",
   "season": "spring",
   "weather": "clear",
   "location": "schoolyard_day",
@@ -10,14 +10,14 @@
   "background": "assets/images/backgrounds/bg_schoolyard_day.webp",
   "sceneImage": "assets/images/events/event_day005_schoolyard_hinata.webp",
   "text": [
-    "After class, Hinata is already at the schoolyard stretching for practice.",
-    "She grins when she sees you and asks for a quick opinion on whether her serve looks more reliable today.",
-    "She says it lightly, but the question matters more to her than she wants to admit."
+    "放課後、ひなたはすでに校庭でストレッチをしていた。",
+    "こちらを見つけてにっと笑い、サーブが昨日より決まって見えるかと聞いた。",
+    "軽く言ったけれど、本当はその答えが気になっているのが伝わってきた。"
   ],
   "choices": [
     {
       "id": "c1",
-      "label": "Tell her it looks sharper than yesterday",
+      "label": "昨日より鋭くなったと伝える",
       "nextEpisodeId": "day-004a",
       "effects": {
         "affection": { "hinata": 3 },
@@ -27,7 +27,7 @@
     },
     {
       "id": "c2",
-      "label": "Tease her for asking while already smiling",
+      "label": "もう笑ってるのにからかうなんて、とふざける",
       "nextEpisodeId": "day-004b",
       "effects": {
         "affection": { "hinata": 2 },

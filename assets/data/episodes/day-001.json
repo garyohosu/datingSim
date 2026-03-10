@@ -1,7 +1,7 @@
 {
   "id": "day-001",
   "day": 1,
-  "title": "At The Gate",
+  "title": "校門にて",
   "season": "spring",
   "weather": "sunny",
   "location": "school_gate",
@@ -10,14 +10,14 @@
   "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "The spring air still feels cool in front of the school gate.",
-    "Minori notices you first and gives a small, careful wave.",
-    "You have just enough time to decide how to answer before the morning bell."
+    "校門の前には、まだ少し肌寒い春の空気が漂っている。",
+    "みのりが先に気づいて、小さく、そっと手を振った。",
+    "朝のチャイムが鳴る前に、どう返すかを決めなければならない。"
   ],
   "choices": [
     {
       "id": "c1",
-      "label": "Wave back with a smile",
+      "label": "笑顔で手を振り返す",
       "nextEpisodeId": "day-001a",
       "effects": {
         "affection": { "minori": 3 },
@@ -27,7 +27,7 @@
     },
     {
       "id": "c2",
-      "label": "Look away, embarrassed",
+      "label": "恥ずかしくて目をそらす",
       "nextEpisodeId": "day-001b",
       "effects": {
         "affection": { "minori": 1 },

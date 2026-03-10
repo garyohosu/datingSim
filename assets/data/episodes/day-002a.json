@@ -1,7 +1,7 @@
 {
   "id": "day-002a",
   "day": 2,
-  "title": "Library Detour",
+  "title": "図書室への寄り道",
   "season": "spring",
   "weather": "sunny",
   "location": "road_after_school",
@@ -10,8 +10,8 @@
   "background": "assets/images/backgrounds/bg_road_after_school.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "Minori brightens immediately and says the library feels less cold when someone walks there with her.",
-    "She mentions that Toko is often there already, as if preparing you for a quieter kind of afternoon."
+    "みのりはすぐに顔を明るくし、誰かと一緒だと図書室が寒くない気がすると言った。",
+    "東子がたいてい先にいると教えてくれた。静かな午後への準備のように。"
   ],
   "choices": [],
   "unlockGallery": [],

@@ -2,20 +2,20 @@
   {
     "date": "2026-03-11",
     "type": "episode",
-    "title": "Week One Prototype Added",
-    "description": "Added a five-day prototype route with same-day branches and three heroine touchpoints.",
+    "title": "第一週プロトタイプ追加",
+    "description": "同日分岐と三人のヒロインの接点を持つ五日間プロトタイプルートを追加。",
     "link": "day-001"
   },
   {
     "date": "2026-03-11",
     "type": "gallery",
-    "title": "Three Event CGs Added",
-    "description": "Unlocked CGs now include Minori at the gate, Toko in the library, and Hinata after practice."
+    "title": "イベントCG三枚追加",
+    "description": "解放済みCGにみのり（校門）、東子（図書室）、ひなた（練習後）が追加された。"
   },
   {
     "date": "2026-03-11",
     "type": "diary",
-    "title": "Diary Entries Expanded",
-    "description": "Diary now includes entries for Minori, Toko, and Hinata."
+    "title": "日記エントリ追加",
+    "description": "日記にみのり、東子、ひなたのエントリが追加された。"
   }
 ]

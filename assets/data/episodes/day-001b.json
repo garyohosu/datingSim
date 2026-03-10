@@ -1,7 +1,7 @@
 {
   "id": "day-001b",
   "day": 1,
-  "title": "At The Gate B",
+  "title": "校門にて B",
   "season": "spring",
   "weather": "sunny",
   "location": "school_gate",
@@ -10,9 +10,9 @@
   "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "Minori tilts her head for a moment, then quietly matches her pace to yours.",
-    "The walk to the building is awkward, but she keeps stealing quick glances your way.",
-    "That little effort somehow feels more honest than a smooth conversation."
+    "みのりは少し首をかしげてから、静かにあなたの歩調に合わせた。",
+    "校舎までの道は気まずかったが、彼女はちらちらとこちらを見ていた。",
+    "その小さな努力が、うまくいった会話よりもずっと正直に感じられた。"
   ],
   "choices": [],
   "unlockGallery": ["cg-day001"],

@@ -2,46 +2,46 @@
   {
     "id": "day-001",
     "day": 1,
-    "title": "At The Gate",
+    "title": "校門にて",
     "characters": ["minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "A first meeting at the school gate sets the tone for the week."
+    "summary": "校門での初めての出会いが、一週間の空気を決めた。"
   },
   {
     "id": "day-002",
     "day": 2,
-    "title": "Promise After School",
+    "title": "放課後の約束",
     "characters": ["minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "A short walk home opens two different ways of spending the next afternoon."
+    "summary": "短い帰り道が、翌日の過ごし方を二通りに分けた。"
   },
   {
     "id": "day-003",
     "day": 3,
-    "title": "Library Rain Check",
+    "title": "図書室の放課後",
     "characters": ["toko", "minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "A quiet library visit introduces Toko and changes the mood of the story."
+    "summary": "図書室への静かな訪問が東子を紹介し、物語の雰囲気を変えた。"
   },
   {
     "id": "day-004",
     "day": 4,
-    "title": "Before Club Practice",
+    "title": "部活前に",
     "characters": ["hinata"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "Hinata asks for an honest answer before practice begins."
+    "summary": "練習前に、ひなたが正直な答えを求めてきた。"
   },
   {
     "id": "day-005",
     "day": 5,
-    "title": "Schoolyard Promise",
+    "title": "校庭の約束",
     "characters": ["hinata", "minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "The first school week closes with a promise that points to the next route."
+    "summary": "最初の一週間が、次のルートへつながる約束で終わった。"
   }
 ]

@@ -1,7 +1,7 @@
 {
   "id": "day-003",
   "day": 3,
-  "title": "Library Rain Check",
+  "title": "図書室の放課後",
   "season": "spring",
   "weather": "cloudy",
   "location": "library_evening",
@@ -10,9 +10,9 @@
   "background": "assets/images/backgrounds/bg_library_evening.webp",
   "sceneImage": "assets/images/events/event_day003_library_toko.webp",
   "text": [
-    "The library is quiet enough to hear the pages turn.",
-    "Toko looks up from her seat, surprised to see Minori with you, then shifts a stack of books to make room.",
-    "What starts as small talk becomes an unexpectedly calm hour shared by three people who are not used to sharing silence."
+    "ページをめくる音が聞こえるほど、図書室は静かだった。",
+    "東子が席から顔を上げ、みのりと一緒なのを見て驚いたように、本の山を動かしてスペースを作った。",
+    "たわいない話が始まりのはずが、沈黙を共有することに慣れていない三人が、思いがけず穏やかな時間を過ごした。"
   ],
   "choices": [],
   "unlockGallery": ["cg-day003"],

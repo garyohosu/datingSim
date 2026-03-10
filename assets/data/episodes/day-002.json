@@ -1,7 +1,7 @@
 {
   "id": "day-002",
   "day": 2,
-  "title": "Promise After School",
+  "title": "放課後の約束",
   "season": "spring",
   "weather": "sunny",
   "location": "road_after_school",
@@ -10,14 +10,14 @@
   "background": "assets/images/backgrounds/bg_road_after_school.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "On the way home, Minori stops beside the road lined with cherry trees.",
-    "She says she might visit the library tomorrow, then asks if you ever take the long way home.",
-    "The answer changes the tone of the entire conversation."
+    "帰り道、みのりが桜並木の脇で立ち止まった。",
+    "明日は図書室に行くかもしれないと言いながら、遠回りして帰ることはあるかと聞いてきた。",
+    "その答えで、会話の空気が変わった。"
   ],
   "choices": [
     {
       "id": "c1",
-      "label": "Suggest stopping by the library together",
+      "label": "一緒に図書室に寄ることを提案する",
       "nextEpisodeId": "day-002a",
       "effects": {
         "affection": { "minori": 2, "toko": 1 },
@@ -27,7 +27,7 @@
     },
     {
       "id": "c2",
-      "label": "Take the shortcut by the schoolyard",
+      "label": "校庭の近くを通る近道を選ぶ",
       "nextEpisodeId": "day-002b",
       "effects": {
         "affection": { "minori": 1, "hinata": 1 },

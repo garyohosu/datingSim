@@ -91,34 +91,33 @@ async function bootstrap() {
       <section class="title-shell">
         <section class="panel title-visual">
           <div class="title-copy">
-            <p class="eyebrow">After School Signals</p>
-            <h1>After School Signals</h1>
+            <p class="eyebrow">放課後のシグナル</p>
+            <h1>放課後のシグナル</h1>
             <p>
-              A playable visual novel MVP with same-day branches, manual saves,
-              gallery unlocks, diary entries, and update previews.
+              同日分岐、手動セーブ、ギャラリー解放、日記エントリ、アップデートプレビューを備えたビジュアルノベルMVP。
             </p>
           </div>
         </section>
         <section class="panel title-menu">
           <div class="section-head">
             <div>
-              <p class="eyebrow">Playable MVP</p>
-              <h2>Title Menu</h2>
+              <p class="eyebrow">プレイ可能なMVP</p>
+              <h2>タイトルメニュー</h2>
             </div>
-            <p class="muted">Autosave resume plus three manual save slots.</p>
+            <p class="muted">オートセーブ再開と手動セーブスロット3つ。</p>
           </div>
           <div class="menu-grid">
-            <button data-action="start" class="primary">Start</button>
-            <button data-action="continue" class="${view.emphasizeContinue ? 'primary' : 'secondary'}">Continue</button>
-            <button data-action="open-load">Load</button>
-            <button data-action="gallery">Gallery</button>
-            <button data-action="diary">Diary</button>
-            <button data-action="updates">Updates</button>
-            <button data-action="settings">Settings</button>
+            <button data-action="start" class="primary">はじめる</button>
+            <button data-action="continue" class="${view.emphasizeContinue ? 'primary' : 'secondary'}">つづける</button>
+            <button data-action="open-load">ロード</button>
+            <button data-action="gallery">ギャラリー</button>
+            <button data-action="diary">日記</button>
+            <button data-action="updates">アップデート</button>
+            <button data-action="settings">設定</button>
           </div>
           <p class="menu-note">
-            Continue resumes the autosave. Load opens autosave and three manual slots.
-            Updates opens linked episodes in view-only mode without touching save data.
+            つづけるはオートセーブを再開します。ロードはオートセーブと手動スロット3つを表示します。
+            アップデートはセーブデータを変更せずに閲覧専用でエピソードを開きます。
           </p>
         </section>
       </section>
@@ -133,10 +132,10 @@ async function bootstrap() {
     const atLastText = currentTextIndex >= textBlocks.length - 1;
     const choices = atLastText ? (episode.choices || []) : [];
     const nextButton = atLastText && choices.length === 0 && episode.nextEpisodeId
-      ? `<button data-action="next-episode" data-next-episode-id="${escapeHtml(episode.nextEpisodeId)}" class="primary">Next Day</button>`
+      ? `<button data-action="next-episode" data-next-episode-id="${escapeHtml(episode.nextEpisodeId)}" class="primary">次の日へ</button>`
       : '';
     const endButton = atLastText && choices.length === 0 && !episode.nextEpisodeId
-      ? '<button data-action="back-title">Back To Title</button>'
+      ? '<button data-action="back-title">タイトルへ</button>'
       : '';
     const choiceButtons = choices.map((choice) => `
       <button data-action="choice" data-choice-id="${escapeHtml(choice.id)}" class="secondary">
@@ -168,13 +167,13 @@ async function bootstrap() {
               <span class="badge">Day ${escapeHtml(episode.day ?? '-')}</span>
               ${episode.season ? `<span class="badge">${escapeHtml(formatLabel(episode.season))}</span>` : ''}
               ${episode.location ? `<span class="badge">${escapeHtml(formatLabel(episode.location))}</span>` : ''}
-              ${view.viewOnly ? '<span class="badge">View Only</span>' : ''}
+              ${view.viewOnly ? '<span class="badge">閲覧専用</span>' : ''}
             </div>
             <div class="hud-right">
-              ${!view.viewOnly ? '<button data-action="open-save">Save</button><button data-action="open-load">Load</button>' : ''}
-              <button data-action="updates">Updates</button>
-              <button data-action="settings">Settings</button>
-              <button data-action="back-title">Title</button>
+              ${!view.viewOnly ? '<button data-action="open-save">セーブ</button><button data-action="open-load">ロード</button>' : ''}
+              <button data-action="updates">アップデート</button>
+              <button data-action="settings">設定</button>
+              <button data-action="back-title">タイトル</button>
             </div>
           </header>
           <section class="stage-art">
@@ -190,17 +189,17 @@ async function bootstrap() {
                 </div>
                 <div class="stat-cloud">
                   ${cast ? `<span class="badge">${escapeHtml(cast)}</span>` : ''}
-                  ${episode.characters?.[0] ? `<span class="badge">Affection ${escapeHtml(episode.characters[0])}: ${escapeHtml(affection[episode.characters[0]] ?? 0)}</span>` : ''}
-                  <span class="badge">Care ${escapeHtml(currentState.params?.care ?? 0)}</span>
-                  <span class="badge">Stress ${escapeHtml(currentState.params?.stress ?? 0)}</span>
+                  ${episode.characters?.[0] ? `<span class="badge">好感度 ${escapeHtml(episode.characters[0])}: ${escapeHtml(affection[episode.characters[0]] ?? 0)}</span>` : ''}
+                  <span class="badge">気遣い ${escapeHtml(currentState.params?.care ?? 0)}</span>
+                  <span class="badge">ストレス ${escapeHtml(currentState.params?.stress ?? 0)}</span>
                 </div>
               </div>
               <p class="scene">${escapeHtml(currentText)}</p>
               <div class="actions">
-                ${!atLastText ? '<button data-action="advance-text" class="primary">Advance</button>' : ''}
+                ${!atLastText ? '<button data-action="advance-text" class="primary">次へ</button>' : ''}
                 ${nextButton}
                 ${endButton}
-                ${view.viewOnly ? '<button data-action="close-view-only">Close View Only</button>' : ''}
+                ${view.viewOnly ? '<button data-action="close-view-only">閲覧専用を閉じる</button>' : ''}
               </div>
               ${choiceButtons ? `<div class="choices">${choiceButtons}</div>` : ''}
             </div>
@@ -215,10 +214,10 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Collection</p>
-            <h2>Gallery</h2>
+            <p class="eyebrow">コレクション</p>
+            <h2>ギャラリー</h2>
           </div>
-          <p class="muted">${view.items.filter((item) => item.unlocked).length} / ${view.items.length} unlocked</p>
+          <p class="muted">${view.items.filter((item) => item.unlocked).length} / ${view.items.length} 解放済み</p>
         </div>
         <div class="card-grid">
           ${view.items.map((item) => `
@@ -227,13 +226,13 @@ async function bootstrap() {
                 ${item.unlocked ? imageTag(item.imagePath, item.title) : ''}
               </div>
               <div class="card-body">
-                <h3>${escapeHtml(item.unlocked ? item.title : 'Locked')}</h3>
-                <p>${escapeHtml(item.unlocked ? item.cgId : 'Silhouette until unlocked')}</p>
+                <h3>${escapeHtml(item.unlocked ? item.title : '未解放')}</h3>
+                <p>${escapeHtml(item.unlocked ? item.cgId : '解放すると表示されます')}</p>
               </div>
             </article>
           `).join('')}
         </div>
-        <div class="actions"><button data-action="back-title">Back To Title</button></div>
+        <div class="actions"><button data-action="back-title">タイトルへ</button></div>
       </section>
     `;
   }
@@ -243,10 +242,10 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Unlocked Notes</p>
-            <h2>Diary</h2>
+            <p class="eyebrow">解放済みのノート</p>
+            <h2>日記</h2>
           </div>
-          <p class="muted">Entries unlock independently from progress reset.</p>
+          <p class="muted">エントリはリセットしても残ります。</p>
         </div>
         <div class="list-stack">
           ${view.items.map((item) => `
@@ -255,16 +254,16 @@ async function bootstrap() {
                 ${imageTag('./assets/images/backgrounds/bg_school_gate_morning.webp', item.title)}
               </div>
               <div>
-                <strong>${escapeHtml(item.unlocked ? item.title : 'Locked Entry')}</strong>
-                <p class="muted">Episode ${escapeHtml(item.episodeId)}</p>
+                <strong>${escapeHtml(item.unlocked ? item.title : '未解放')}</strong>
+                <p class="muted">エピソード ${escapeHtml(item.episodeId)}</p>
               </div>
               ${item.unlocked
-                ? `<button data-action="open-diary" data-diary-id="${escapeHtml(item.diaryId)}" class="primary">Open</button>`
-                : '<span class="muted">Locked</span>'}
+                ? `<button data-action="open-diary" data-diary-id="${escapeHtml(item.diaryId)}" class="primary">開く</button>`
+                : '<span class="muted">未解放</span>'}
             </article>
           `).join('')}
         </div>
-        <div class="actions"><button data-action="back-title">Back To Title</button></div>
+        <div class="actions"><button data-action="back-title">タイトルへ</button></div>
       </section>
     `;
   }
@@ -274,13 +273,13 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Diary Entry</p>
+            <p class="eyebrow">日記エントリ</p>
             <h2>${escapeHtml(view.diary?.title ?? '')}</h2>
           </div>
         </div>
         <p class="scene">${escapeHtml(view.diary?.text ?? '')}</p>
         <div class="actions">
-          <button data-action="diary">Back To Diary</button>
+          <button data-action="diary">日記へ戻る</button>
         </div>
       </section>
     `;
@@ -291,10 +290,10 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Published Changes</p>
-            <h2>Updates</h2>
+            <p class="eyebrow">公開された変更</p>
+            <h2>アップデート</h2>
           </div>
-          <p class="muted">Preview linked episodes without changing progression.</p>
+          <p class="muted">進行に影響せず、リンクされたエピソードをプレビューできます。</p>
         </div>
         <div class="list-stack">
           ${view.items.map((item) => `
@@ -306,11 +305,11 @@ async function bootstrap() {
                 <strong>${escapeHtml(item.title)}</strong>
                 <p class="muted">${escapeHtml(item.description)}</p>
               </div>
-              ${item.link ? `<button data-action="open-update-link" data-episode-id="${escapeHtml(item.link)}" class="primary">Preview Episode</button>` : ''}
+              ${item.link ? `<button data-action="open-update-link" data-episode-id="${escapeHtml(item.link)}" class="primary">エピソードをプレビュー</button>` : ''}
             </article>
           `).join('')}
         </div>
-        <div class="actions"><button data-action="back-title">Back To Title</button></div>
+        <div class="actions"><button data-action="back-title">タイトルへ</button></div>
       </section>
     `;
   }
@@ -320,31 +319,31 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Audio And Data</p>
-            <h2>Settings</h2>
+            <p class="eyebrow">音声とデータ</p>
+            <h2>設定</h2>
           </div>
           <p class="muted">
-            Gallery ${escapeHtml(view.collection?.galleryUnlocked?.length ?? 0)} /
-            Diary ${escapeHtml(view.collection?.diaryUnlocked?.length ?? 0)}
+            ギャラリー ${escapeHtml(view.collection?.galleryUnlocked?.length ?? 0)} /
+            日記 ${escapeHtml(view.collection?.diaryUnlocked?.length ?? 0)}
           </p>
         </div>
         <div class="settings-grid">
-          <label>BGM Volume
+          <label>BGM音量
             <input id="bgm-volume" type="range" min="0" max="1" step="0.1" value="${view.settings?.bgmVolume ?? 0.7}">
           </label>
-          <label>SE Volume
+          <label>SE音量
             <input id="se-volume" type="range" min="0" max="1" step="0.1" value="${view.settings?.seVolume ?? 0.8}">
           </label>
           <label class="check">
             <input id="muted" type="checkbox" ${view.settings?.muted ? 'checked' : ''}>
-            Mute Audio
+            ミュート
           </label>
         </div>
         <div class="actions">
-          <button data-action="save-settings" class="primary">Save Settings</button>
-          <button data-action="reset-progress">Reset Progress</button>
-          <button data-action="reset-all">Delete All Data</button>
-          <button data-action="back-title">Back To Title</button>
+          <button data-action="save-settings" class="primary">設定を保存</button>
+          <button data-action="reset-progress">進行リセット</button>
+          <button data-action="reset-all">全データ削除</button>
+          <button data-action="back-title">タイトルへ</button>
         </div>
       </section>
     `;
@@ -356,20 +355,20 @@ async function bootstrap() {
       <section class="panel section-panel">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Slots</p>
-            <h2>${isSaveMode ? 'Save' : 'Load'}</h2>
+            <p class="eyebrow">スロット</p>
+            <h2>${isSaveMode ? 'セーブ' : 'ロード'}</h2>
           </div>
-          <p class="muted">${isSaveMode ? 'Write current progress to a manual slot.' : 'Autosave plus three manual slots.'}</p>
+          <p class="muted">${isSaveMode ? '現在の進行を手動スロットに保存します。' : 'オートセーブと手動スロット3つ。'}</p>
         </div>
         <div class="list-stack">
           ${view.slots.map((slot) => {
-            const label = slot.slot === 'auto' ? 'Autosave' : `Slot ${slot.slot}`;
+            const label = slot.slot === 'auto' ? 'オートセーブ' : `スロット ${slot.slot}`;
             const summary = slot.isEmpty
-              ? 'Empty'
-              : `Day ${slot.currentDay ?? '-'} / ${slot.currentEpisodeId ?? 'unknown episode'}`;
+              ? '空'
+              : `Day ${slot.currentDay ?? '-'} / ${slot.currentEpisodeId ?? '不明なエピソード'}`;
             const button = slot.slot === 'auto' && isSaveMode
-              ? '<span class="muted">Autosave is managed automatically</span>'
-              : `<button data-action="${isSaveMode ? 'save-slot' : 'load-slot'}" data-slot="${escapeHtml(slot.slot)}" class="primary">${isSaveMode ? 'Save Here' : 'Load'}</button>`;
+              ? '<span class="muted">オートセーブは自動管理されます</span>'
+              : `<button data-action="${isSaveMode ? 'save-slot' : 'load-slot'}" data-slot="${escapeHtml(slot.slot)}" class="primary">${isSaveMode ? 'ここに保存' : 'ロード'}</button>`;
             return `
               <article class="list-item ${slot.isEmpty ? 'locked' : ''}">
                 <div class="diary-cover">
@@ -379,14 +378,14 @@ async function bootstrap() {
                   <strong>${escapeHtml(label)}</strong>
                   <p class="muted">${escapeHtml(summary)}</p>
                   ${slot.savedAt ? `<p class="muted">${escapeHtml(slot.savedAt)}</p>` : ''}
-                  ${slot.corrupted ? '<p class="muted">Corrupted data detected</p>' : ''}
+                  ${slot.corrupted ? '<p class="muted">データが破損しています</p>' : ''}
                 </div>
                 ${button}
               </article>
             `;
           }).join('')}
         </div>
-        <div class="actions"><button data-action="back-title">Back To Title</button></div>
+        <div class="actions"><button data-action="back-title">タイトルへ</button></div>
       </section>
     `;
   }
@@ -394,7 +393,7 @@ async function bootstrap() {
   function renderView(view) {
     updateViewMeta(view);
     if (!view) {
-      root.innerHTML = '<section class="panel section-panel"><p>No screen is available.</p></section>';
+      root.innerHTML = '<section class="panel section-panel"><p>画面がありません。</p></section>';
       return;
     }
 
@@ -426,14 +425,14 @@ async function bootstrap() {
       case 'error':
         root.innerHTML = `
           <section class="panel section-panel error">
-            <h2>Error</h2>
+            <h2>エラー</h2>
             <p>${escapeHtml(view.message)}</p>
-            <div class="actions"><button data-action="back-title">Back To Title</button></div>
+            <div class="actions"><button data-action="back-title">タイトルへ</button></div>
           </section>
         `;
         return;
       default:
-        root.innerHTML = '<section class="panel section-panel"><p>Unknown screen.</p></section>';
+        root.innerHTML = '<section class="panel section-panel"><p>不明な画面です。</p></section>';
     }
   }
 
@@ -456,7 +455,7 @@ async function bootstrap() {
     try {
       const saved = storage.loadAuto();
       if (!saved) {
-        setStatus('No autosave is available.');
+        setStatus('オートセーブがありません。');
         return showTitle();
       }
       state.restoreState(saved);
@@ -464,7 +463,7 @@ async function bootstrap() {
       const view = await router.navigateTo('game', { episode, state: state.getState() });
       renderView(view);
     } catch (error) {
-      setStatus('Autosave could not be loaded. Open the load screen manually.');
+      setStatus('オートセーブを読み込めませんでした。ロード画面から手動で開いてください。');
       renderView(renderer.showError('AUTO_SAVE_LOAD_FAILED'));
     }
   }
@@ -475,7 +474,7 @@ async function bootstrap() {
         ? storage.loadAuto()
         : storage.loadManual(Number(slotValue));
       if (!saved) {
-        setStatus('That slot is empty.');
+        setStatus('そのスロットは空です。');
         return;
       }
       state.restoreState(saved);
@@ -484,24 +483,24 @@ async function bootstrap() {
       const view = await router.navigateTo('game', { episode, state: state.getState() });
       renderView(view);
     } catch (error) {
-      setStatus('Save data could not be loaded.');
+      setStatus('セーブデータを読み込めませんでした。');
       renderView(renderer.showError(error.message || 'LOAD_FAILED'));
     }
   }
 
   async function saveSlot(slotValue) {
     if (router.isViewOnly()) {
-      setStatus('View-only mode cannot save.');
+      setStatus('閲覧専用モードではセーブできません。');
       return;
     }
 
     if (slotValue === 'auto') {
-      setStatus('Autosave is managed automatically.');
+      setStatus('オートセーブは自動管理されます。');
       return;
     }
 
     storage.saveManual(Number(slotValue), state.getState());
-    setStatus(`Saved to slot ${slotValue}.`);
+    setStatus(`スロット ${slotValue} に保存しました。`);
     renderView(await router.navigateTo('saveload', { mode: 'save' }));
   }
 
@@ -517,22 +516,22 @@ async function bootstrap() {
   }
 
   async function resetProgressFlow() {
-    if (!window.confirm('Delete current progress only? Gallery, diary, and endings will remain.')) {
+    if (!window.confirm('現在の進行のみ削除しますか？ギャラリー、日記、エンディングは残ります。')) {
       return;
     }
     storage.resetProgress();
     state.initState();
-    setStatus('Progress reset. Collection data was preserved.');
+    setStatus('進行をリセットしました。コレクションデータは保持されています。');
     await showTitle();
   }
 
   async function resetAllFlow() {
-    if (!window.confirm('Delete all local data, including settings, gallery, diaries, and saves?')) {
+    if (!window.confirm('設定、ギャラリー、日記、セーブデータを含むすべてのローカルデータを削除しますか？')) {
       return;
     }
     storage.resetAll();
     state.initState();
-    setStatus('All local data deleted.');
+    setStatus('すべてのローカルデータを削除しました。');
     await showTitle();
   }
 
@@ -570,7 +569,7 @@ async function bootstrap() {
           };
           storage.saveSettings(settings);
           audio.applySettings(settings);
-          setStatus('Settings saved.');
+          setStatus('設定を保存しました。');
           return;
         }
         case 'reset-progress':
@@ -638,7 +637,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.error(error);
     const root = document.getElementById('app');
     if (root) {
-      root.innerHTML = `<section class="panel section-panel error"><h2>Bootstrap Error</h2><p>${error.message}</p></section>`;
+      root.innerHTML = `<section class="panel section-panel error"><h2>起動エラー</h2><p>${error.message}</p></section>`;
     }
   });
 });
