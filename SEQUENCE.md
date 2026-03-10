@@ -695,14 +695,15 @@ sequenceDiagram
     alt JSONパース失敗
         S-->>RE: Error("SAVE_PARSE_FAILED")
         RE-->>P: 「オートセーブが破損しています。\nロード画面から手動セーブを選択してください。」
+        Note over RE: 手動セーブへ自動フォールバックしない
         P->>RE: 「ロード画面へ」
         RE->>R: navigateTo("load")
     else バージョン不一致
         S-->>RE: Error("VERSION_MISMATCH", { savedVersion, currentVersion })
-        RE-->>P: 「セーブデータが古い形式です。\n一部のデータが失われる可能性があります。」
-        RE->>S: migrateState(saveJSON)
-        S-->>RE: migratedState（可能な範囲で復元）
-        RE-->>P: マイグレーション後の状態でロード続行を提示
+        RE-->>P: 「セーブデータが古い形式のため読み込めません。\nロード画面から手動セーブを選択してください。」
+        Note over RE: 手動セーブへ自動フォールバックしない
+        P->>RE: 「ロード画面へ」
+        RE->>R: navigateTo("load")
     end
     deactivate S
 ```
@@ -798,10 +799,13 @@ sequenceDiagram
     deactivate HR
 
     activate DA
+    Note over DA: 中間生成物 → 正式 episode JSON に変換\n（episodeId→id / textBlocks→text / featuredHeroine+supportHeroines→characters）
     DA->>DA: JSON フォーマット検証・整形
     DA->>DA: ID重複チェック
     DA->>DA: episodes.json マニフェスト更新
-    DA-->>HR: 整形済みファイル一式
+    DA->>DA: updates.json の description を生成・追記
+    Note over DA: imageRequirements・writerComment は\n正式 episode JSON に含めない
+    DA-->>HR: 整形済みファイル一式\n（episode JSON + episodes.json + updates.json + 画像）
     deactivate DA
 
     activate HR
@@ -810,13 +814,12 @@ sequenceDiagram
     deactivate HR
 
     activate PB
-    PB->>PB: git add（変更ファイル）
+    PB->>PB: git add（episode JSON / episodes.json /\nupdates.json / 画像ファイル）
+    Note over PB: updates.json を同一コミットに含める\n二段 push はしない
     PB->>PB: git commit
     PB->>PB: git push origin main
     PB->>GH: GitHub Pages 反映確認
     GH-->>PB: 公開完了
-    PB->>PB: updates.json に追記
-    PB->>PB: 再度 push
     PB-->>CR: 完了ログ保存
     deactivate PB
 ```
@@ -875,7 +878,7 @@ sequenceDiagram
     GH-->>PB: push 失敗（認証エラー等）
     PB->>PB: 処理を中断
     PB->>PB: エラーログを保存
-    Note over PB: updates.json は更新しない\n前日の公開状態を維持する
+    Note over PB: 作業ツリー上で updates.json が更新済みでも\npush 失敗時は公開状態に反映されない\n前日の公開状態を維持する
     PB-->>CR: 失敗ログ保存・終了
     deactivate PB
 

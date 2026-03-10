@@ -645,3 +645,60 @@ SPEC.md レビュー時に判明した不明点・確認事項。全項目回答
 2. 閲覧モードでの日記解放・ギャラリー解放は MVP では起きないで確定か
 3. 「既読マーク済み」のエピソードをもう一度閲覧モードで開いた場合の挙動（差異なし？）
 
+---
+
+## SEQUENCEレビュー: 不整合修正記録（2026-03-11）
+
+以下は SEQUENCE.md の整合性レビューで発見した3件の不整合と、その確定回答。
+
+---
+
+## F1. updates.json の更新タイミング不整合（SEQUENCE Sec.21 / USECASE Sec.4.1）
+
+**発見**: SEQUENCE Sec.21 正常系の末尾で「Publisher Agent が GitHub Pages 反映確認後に updates.json に追記 → 再度 push」となっていた。一方 USECASE Sec.4.2 補足・QandA R7 では「episode JSON / episodes.json と同じ変更セットに含める」と確定している。
+
+**回答**:
+- **正式仕様**: updates.json は **push 前工程（Data Agent）で更新し、同一コミットに含める**
+- Publisher Agent は二段 push をしない
+- push 失敗時は updates.json も push されないため、公開状態は変わらない
+
+**修正内容**:
+- Seq.21: Data Agent に `updates.json の description 生成・追記` を追加
+- Seq.21: Publisher Agent の「updates.json に追記 → 再度 push」を削除
+- Seq.21: `git add` に `updates.json` を明示
+
+---
+
+## F2. オートセーブ破損時の挙動矛盾（SEQUENCE Sec.18 / USECASE Sec.3.1 / QandA U1）
+
+**発見**: SEQUENCE Sec.18 のバージョン不一致ケースで `migrateState()` を呼び出して自動復元を試みていた。USECASE Sec.3.1 補足・QandA U1 では「自動フォールバックしない、ロード画面へ誘導する」と確定している。
+
+**回答**:
+- **正式仕様**: オートセーブの破損・バージョン不一致どちらの場合も **手動セーブへ自動フォールバックしない**
+- エラーメッセージを表示し、ロード画面へ誘導する
+- ユーザーが明示的にロードスロットを選ぶ
+
+**修正内容**:
+- Seq.18: バージョン不一致ケースの `migrateState()` 自動復元を削除
+- Seq.18: 両ケースとも「手動セーブへ自動フォールバックしない」の Note を追加
+- Seq.18: バージョン不一致ケースも `navigateTo("load")` に統一
+
+---
+
+## F3. Scenario Agent 出力と正式 episode JSON の境界不明確（SEQUENCE Sec.21）
+
+**発見**: Seq.21 で Scenario Agent の出力が「エピソードJSON（確定）」と表記されており、これが中間生成物か正式 JSON かが不明確だった。Data Agent の変換責務も記載されていなかった。
+
+**回答**:
+- **Scenario Agent 出力**: 中間生成物（`episodeId`, `summary`, `textBlocks`, `featuredHeroine`, `supportHeroines`, `imageRequirements`, `writerComment` を含む）
+- **Data Agent 出力**: 正式保存物（変換ルール適用済み）
+  - `episodeId` → `id`
+  - `textBlocks` → `text`
+  - `featuredHeroine` + `supportHeroines` → `characters`
+  - `imageRequirements` → `background` / `sceneImage` / 制作メタデータへ分解し正式 JSON に含めない
+  - `writerComment` → 内部レビュー用・正式 JSON に含めない
+
+**修正内容**:
+- Seq.21: Data Agent ステップに変換責務の Note を追加
+- Seq.21: HR→DA の引き渡しを「エピソードJSON（確定）」→「採用画像ファイル + 中間生成物」として明確化
+
