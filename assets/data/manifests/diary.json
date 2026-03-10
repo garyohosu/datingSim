@@ -4,5 +4,17 @@
     "heroine": "minori",
     "episodeId": "day-001",
     "title": "Morning At Gate"
+  },
+  {
+    "diaryId": "diary-toko-003",
+    "heroine": "toko",
+    "episodeId": "day-003",
+    "title": "A Quiet Desk"
+  },
+  {
+    "diaryId": "diary-hinata-005",
+    "heroine": "hinata",
+    "episodeId": "day-005",
+    "title": "After Practice"
   }
 ]

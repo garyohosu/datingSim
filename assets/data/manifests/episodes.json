@@ -6,7 +6,7 @@
     "characters": ["minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "Intro episode where you meet Minori at the school gate."
+    "summary": "A first meeting at the school gate sets the tone for the week."
   },
   {
     "id": "day-002",
@@ -15,6 +15,33 @@
     "characters": ["minori"],
     "season": "spring",
     "addedAt": "2026-03-11",
-    "summary": "A short after-school scene where the distance between you and Minori narrows."
+    "summary": "A short walk home opens two different ways of spending the next afternoon."
+  },
+  {
+    "id": "day-003",
+    "day": 3,
+    "title": "Library Rain Check",
+    "characters": ["toko", "minori"],
+    "season": "spring",
+    "addedAt": "2026-03-11",
+    "summary": "A quiet library visit introduces Toko and changes the mood of the story."
+  },
+  {
+    "id": "day-004",
+    "day": 4,
+    "title": "Before Club Practice",
+    "characters": ["hinata"],
+    "season": "spring",
+    "addedAt": "2026-03-11",
+    "summary": "Hinata asks for an honest answer before practice begins."
+  },
+  {
+    "id": "day-005",
+    "day": 5,
+    "title": "Schoolyard Promise",
+    "characters": ["hinata", "minori"],
+    "season": "spring",
+    "addedAt": "2026-03-11",
+    "summary": "The first school week closes with a promise that points to the next route."
   }
 ]

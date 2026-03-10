@@ -1,0 +1,42 @@
+{
+  "id": "day-004",
+  "day": 4,
+  "title": "Before Club Practice",
+  "season": "spring",
+  "weather": "clear",
+  "location": "schoolyard_day",
+  "characters": ["hinata"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_schoolyard_day.webp",
+  "sceneImage": "assets/images/events/event_day005_schoolyard_hinata.webp",
+  "text": [
+    "After class, Hinata is already at the schoolyard stretching for practice.",
+    "She grins when she sees you and asks for a quick opinion on whether her serve looks more reliable today.",
+    "She says it lightly, but the question matters more to her than she wants to admit."
+  ],
+  "choices": [
+    {
+      "id": "c1",
+      "label": "Tell her it looks sharper than yesterday",
+      "nextEpisodeId": "day-004a",
+      "effects": {
+        "affection": { "hinata": 3 },
+        "params": { "sports": 1 },
+        "flags": { "hinata_confidence_up": true }
+      }
+    },
+    {
+      "id": "c2",
+      "label": "Tease her for asking while already smiling",
+      "nextEpisodeId": "day-004b",
+      "effects": {
+        "affection": { "hinata": 2 },
+        "params": { "charm": 1 },
+        "flags": { "hinata_teased": true }
+      }
+    }
+  ],
+  "unlockGallery": [],
+  "unlockDiary": [],
+  "nextEpisodeId": "day-005"
+}

@@ -11,9 +11,11 @@
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
     "Minori smiles with visible relief and slows down so the two of you can walk together.",
-    "You head toward the classroom side by side."
+    "She talks about a new notebook she bought and laughs when she realizes she is talking too fast.",
+    "By the time you reach the classroom, the silence between you has turned warm."
   ],
   "choices": [],
   "unlockGallery": ["cg-day001"],
+  "unlockDiary": ["diary-minori-001"],
   "nextEpisodeId": "day-002"
 }

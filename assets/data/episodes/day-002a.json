@@ -1,0 +1,20 @@
+{
+  "id": "day-002a",
+  "day": 2,
+  "title": "Library Detour",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "road_after_school",
+  "characters": ["minori", "toko"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_road_after_school.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "Minori brightens immediately and says the library feels less cold when someone walks there with her.",
+    "She mentions that Toko is often there already, as if preparing you for a quieter kind of afternoon."
+  ],
+  "choices": [],
+  "unlockGallery": [],
+  "unlockDiary": [],
+  "nextEpisodeId": "day-003"
+}

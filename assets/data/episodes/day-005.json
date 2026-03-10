@@ -1,0 +1,22 @@
+{
+  "id": "day-005",
+  "day": 5,
+  "title": "Schoolyard Promise",
+  "season": "spring",
+  "weather": "sunset",
+  "location": "schoolyard_day",
+  "characters": ["hinata", "minori"],
+  "bgm": "evening_theme",
+  "background": "assets/images/backgrounds/bg_classroom_sunset.webp",
+  "sceneImage": "assets/images/events/event_day005_schoolyard_hinata.webp",
+  "text": [
+    "Practice ends with the sky turning gold above the schoolyard.",
+    "Hinata jogs over with a towel over her shoulder, still smiling from the last rally.",
+    "Minori arrives a moment later with your bag and quietly says the week felt shorter than usual.",
+    "For the first time, it feels like the days after school might really begin from here."
+  ],
+  "choices": [],
+  "unlockGallery": ["cg-day005"],
+  "unlockDiary": ["diary-hinata-005"],
+  "nextEpisodeId": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "day-003",
+  "day": 3,
+  "title": "Library Rain Check",
+  "season": "spring",
+  "weather": "cloudy",
+  "location": "library_evening",
+  "characters": ["toko", "minori"],
+  "bgm": "evening_theme",
+  "background": "assets/images/backgrounds/bg_library_evening.webp",
+  "sceneImage": "assets/images/events/event_day003_library_toko.webp",
+  "text": [
+    "The library is quiet enough to hear the pages turn.",
+    "Toko looks up from her seat, surprised to see Minori with you, then shifts a stack of books to make room.",
+    "What starts as small talk becomes an unexpectedly calm hour shared by three people who are not used to sharing silence."
+  ],
+  "choices": [],
+  "unlockGallery": ["cg-day003"],
+  "unlockDiary": ["diary-toko-003"],
+  "nextEpisodeId": "day-004"
+}

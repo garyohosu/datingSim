@@ -10,10 +10,33 @@
   "background": "assets/images/backgrounds/bg_road_after_school.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "On the way home after school, Minori suddenly stops walking.",
-    "She says she will come a little earlier again tomorrow."
+    "On the way home, Minori stops beside the road lined with cherry trees.",
+    "She says she might visit the library tomorrow, then asks if you ever take the long way home.",
+    "The answer changes the tone of the entire conversation."
   ],
-  "choices": [],
+  "choices": [
+    {
+      "id": "c1",
+      "label": "Suggest stopping by the library together",
+      "nextEpisodeId": "day-002a",
+      "effects": {
+        "affection": { "minori": 2, "toko": 1 },
+        "params": { "study": 1 },
+        "flags": { "route_library_hint": true }
+      }
+    },
+    {
+      "id": "c2",
+      "label": "Take the shortcut by the schoolyard",
+      "nextEpisodeId": "day-002b",
+      "effects": {
+        "affection": { "minori": 1, "hinata": 1 },
+        "params": { "sports": 1 },
+        "flags": { "route_schoolyard_hint": true }
+      }
+    }
+  ],
   "unlockGallery": [],
-  "nextEpisodeId": null
+  "unlockDiary": [],
+  "nextEpisodeId": "day-003"
 }

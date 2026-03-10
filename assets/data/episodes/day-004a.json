@@ -1,0 +1,20 @@
+{
+  "id": "day-004a",
+  "day": 4,
+  "title": "Before Club Practice A",
+  "season": "spring",
+  "weather": "clear",
+  "location": "schoolyard_day",
+  "characters": ["hinata"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_schoolyard_day.webp",
+  "sceneImage": "assets/images/events/event_day005_schoolyard_hinata.webp",
+  "text": [
+    "Hinata tries to act casual, but the pride in her face gives her away instantly.",
+    "She asks you to stay for one more serve, then one more after that."
+  ],
+  "choices": [],
+  "unlockGallery": [],
+  "unlockDiary": [],
+  "nextEpisodeId": "day-005"
+}

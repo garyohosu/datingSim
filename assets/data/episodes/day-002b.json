@@ -1,0 +1,20 @@
+{
+  "id": "day-002b",
+  "day": 2,
+  "title": "Schoolyard Shortcut",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "schoolyard_day",
+  "characters": ["minori", "hinata"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_schoolyard_day.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "The shortcut takes you past the schoolyard where club practice is already starting.",
+    "A bright voice cuts across the field. Hinata spots the two of you and waves like she has been waiting to interrupt."
+  ],
+  "choices": [],
+  "unlockGallery": [],
+  "unlockDiary": [],
+  "nextEpisodeId": "day-003"
+}

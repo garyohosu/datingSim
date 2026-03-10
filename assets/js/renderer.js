@@ -31,6 +31,7 @@ function renderTitle() {
   return {
     screen: 'title',
     emphasizeContinue: hasSave,
+    hasSave,
   };
 }
 
@@ -38,16 +39,28 @@ function renderGame(episode, state) {
   _currentEpisode = episode || null;
   _currentTextIndex = 0;
 
-  if (_state && episode && Array.isArray(episode.unlockGallery)) {
-    for (const cgId of episode.unlockGallery) {
-      if (!_state.isGalleryUnlocked || !_state.isGalleryUnlocked(cgId)) {
-        _state.unlockGalleryItem(cgId);
+  if (_state && episode) {
+    if (Array.isArray(episode.unlockGallery)) {
+      for (const cgId of episode.unlockGallery) {
+        if (!_state.isGalleryUnlocked || !_state.isGalleryUnlocked(cgId)) {
+          _state.unlockGalleryItem(cgId);
+        }
       }
     }
+
+    if (Array.isArray(episode.unlockDiary)) {
+      for (const diaryId of episode.unlockDiary) {
+        if (!_state.isDiaryUnlocked || !_state.isDiaryUnlocked(diaryId)) {
+          _state.unlockDiaryEntry(diaryId);
+        }
+      }
+    }
+
+    _state.addSeenEpisode(episode.id);
   }
 
   const snapshot = _getCurrentState();
-  if (_storage && snapshot && episode && Array.isArray(episode.unlockGallery) && episode.unlockGallery.length > 0) {
+  if (_storage && snapshot && episode && ((episode.unlockGallery && episode.unlockGallery.length > 0) || (episode.unlockDiary && episode.unlockDiary.length > 0))) {
     _storage.saveAuto(snapshot);
   }
 
@@ -97,16 +110,16 @@ async function renderGallery() {
 }
 
 async function renderDiaryList() {
-  const seenEpisodes = _state && typeof _state.getSeenEpisodes === 'function'
-    ? _state.getSeenEpisodes()
-    : [];
   const definitions = _dataLoader ? await _dataLoader.loadDiaryManifest() : [];
+  const unlockedDiaryIds = _state && typeof _state.getState === 'function'
+    ? (_state.getState().diaryUnlocked || [])
+    : [];
 
   return {
     screen: 'diary',
     items: definitions.map((entry) => ({
       ...entry,
-      unlocked: seenEpisodes.includes(entry.episodeId),
+      unlocked: unlockedDiaryIds.includes(entry.diaryId),
     })),
   };
 }
@@ -128,9 +141,14 @@ async function renderUpdates() {
 }
 
 function renderSaveLoad(mode = 'load') {
+  const slots = _storage && typeof _storage.listSaves === 'function'
+    ? _storage.listSaves()
+    : [];
+
   return {
     screen: 'saveload',
     mode,
+    slots,
   };
 }
 
@@ -138,9 +156,14 @@ function renderSettings() {
   const settings = _storage && typeof _storage.loadSettings === 'function'
     ? _storage.loadSettings()
     : null;
+  const collection = _storage && typeof _storage.loadCollection === 'function'
+    ? _storage.loadCollection()
+    : { galleryUnlocked: [], diaryUnlocked: [], endingsReached: [] };
+
   return {
     screen: 'settings',
     settings,
+    collection,
   };
 }
 
@@ -171,6 +194,10 @@ function handleChoice(choice, { episodeId } = {}) {
 
   if (affectionChanged && _audio) {
     _audio.playSE('affection_up');
+  }
+
+  if (_storage && state) {
+    _storage.saveAuto(state);
   }
 
   return {

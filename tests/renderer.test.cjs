@@ -11,6 +11,7 @@ function createDeps() {
     currentEpisodeId: 'day-002a',
     seenEpisodes: ['day-001'],
     galleryUnlocked: ['cg-day001'],
+    diaryUnlocked: ['diary-minori-001'],
   };
 
   return {
@@ -24,12 +25,16 @@ function createDeps() {
       advanceDay: () => calls.push(['advanceDay']),
       isGalleryUnlocked: (cgId) => cgId === 'cg-day001',
       unlockGalleryItem: (cgId) => calls.push(['unlockGalleryItem', cgId]),
+      isDiaryUnlocked: (diaryId) => diaryId === 'diary-minori-001',
+      unlockDiaryEntry: (diaryId) => calls.push(['unlockDiaryEntry', diaryId]),
       getGalleryUnlocked: () => ['cg-day001'],
       getSeenEpisodes: () => ['day-001'],
     },
     storage: {
       hasAnySave: () => true,
       loadSettings: () => ({ bgmVolume: 0.7, seVolume: 0.8, muted: false }),
+      loadCollection: () => ({ galleryUnlocked: ['cg-day001'], diaryUnlocked: ['diary-minori-001'], endingsReached: [] }),
+      listSaves: () => [{ slot: 'auto', isEmpty: false, currentDay: 2, currentEpisodeId: 'day-002a' }],
       saveAuto: (state) => calls.push(['saveAuto', state]),
     },
     dataLoader: {
@@ -81,25 +86,29 @@ test('renderTitle toggles continue emphasis based on save presence', async () =>
   assert.equal(view.emphasizeContinue, true);
 });
 
-test('renderGame unlocks gallery entries in normal mode and saves progress', async () => {
+test('renderGame unlocks gallery and diary entries in normal mode and saves progress', async () => {
   const renderer = require(rendererPath);
   const deps = createDeps();
   deps.state.isGalleryUnlocked = () => false;
+  deps.state.isDiaryUnlocked = () => false;
   renderer._setDependencies(deps);
 
   const view = renderer.renderGame(
-    { id: 'day-001', bgm: 'daily_theme', text: ['a'], unlockGallery: ['cg-day001'] },
+    { id: 'day-001', bgm: 'daily_theme', text: ['a'], unlockGallery: ['cg-day001'], unlockDiary: ['diary-minori-001'] },
     { currentDay: 1 }
   );
 
   assert.equal(view.screen, 'game');
   assert.deepEqual(deps.calls, [
     ['unlockGalleryItem', 'cg-day001'],
+    ['unlockDiaryEntry', 'diary-minori-001'],
+    ['addSeenEpisode', 'day-001'],
     ['saveAuto', {
       currentDay: 2,
       currentEpisodeId: 'day-002a',
       seenEpisodes: ['day-001'],
       galleryUnlocked: ['cg-day001'],
+      diaryUnlocked: ['diary-minori-001'],
     }],
     ['playBGM', 'daily_theme'],
   ]);
@@ -146,6 +155,7 @@ test('completeBranchRead advances day, saves, and loads the next episode', async
       currentEpisodeId: 'day-002a',
       seenEpisodes: ['day-001'],
       galleryUnlocked: ['cg-day001'],
+      diaryUnlocked: ['diary-minori-001'],
     }],
     ['loadEpisode', 'day-003'],
   ]);
@@ -171,6 +181,19 @@ test('renderDiaryList locks entries by seen episode state', async () => {
 
   assert.equal(view.items[0].unlocked, true);
   assert.equal(view.items[1].unlocked, false);
+});
+
+test('renderSaveLoad returns slot summaries from storage', async () => {
+  const renderer = require(rendererPath);
+  const deps = createDeps();
+  renderer._setDependencies(deps);
+
+  const view = renderer.renderSaveLoad('save');
+
+  assert.equal(view.screen, 'saveload');
+  assert.equal(view.mode, 'save');
+  assert.equal(view.slots.length, 1);
+  assert.equal(view.slots[0].slot, 'auto');
 });
 
 test('renderUpdates returns update manifest items', async () => {

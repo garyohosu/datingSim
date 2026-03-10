@@ -10,8 +10,9 @@
   "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
-    "A little of the morning chill still lingers in front of the school gate.",
-    "Minori notices you first and gives a small wave."
+    "The spring air still feels cool in front of the school gate.",
+    "Minori notices you first and gives a small, careful wave.",
+    "You have just enough time to decide how to answer before the morning bell."
   ],
   "choices": [
     {
@@ -36,5 +37,6 @@
     }
   ],
   "unlockGallery": ["cg-day001"],
+  "unlockDiary": ["diary-minori-001"],
   "nextEpisodeId": "day-002"
 }

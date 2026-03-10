@@ -1,0 +1,20 @@
+{
+  "id": "day-004b",
+  "day": 4,
+  "title": "Before Club Practice B",
+  "season": "spring",
+  "weather": "clear",
+  "location": "schoolyard_day",
+  "characters": ["hinata"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_schoolyard_day.webp",
+  "sceneImage": "assets/images/events/event_day005_schoolyard_hinata.webp",
+  "text": [
+    "Hinata puffs her cheeks in protest, then laughs before she can keep the act going.",
+    "The joking leaves her visibly more relaxed, and the next serve lands right where she wanted."
+  ],
+  "choices": [],
+  "unlockGallery": [],
+  "unlockDiary": [],
+  "nextEpisodeId": "day-005"
+}

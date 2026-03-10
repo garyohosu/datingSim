@@ -22,7 +22,7 @@ $html = @'
       setTimeout(() => reject(new Error("iframe load timeout")), 10000);
     });
 
-    await sleep(1200);
+    await sleep(1500);
 
     const doc = frame.contentDocument;
     const click = (selector) => {
@@ -33,24 +33,46 @@ $html = @'
     const text = () => doc.body.innerText.replace(/\s+/g, " ").trim();
     const exists = (selector) => Boolean(doc.querySelector(selector));
 
-    results.push({ step: "title", ok: exists('[data-action="start"]') && exists('[data-action="continue"]') });
+    results.push({ step: "title", ok: exists('[data-action="start"]') && exists('[data-action="open-load"]') });
 
     click('[data-action="start"]');
-    await sleep(600);
+    await sleep(700);
     results.push({ step: "start_game", ok: text().includes("At The Gate") });
 
     click('[data-action="advance-text"]');
-    await sleep(200);
+    await sleep(300);
+    click('[data-action="advance-text"]');
+    await sleep(300);
     results.push({ step: "advance_text", ok: text().includes("Wave back with a smile") && text().includes("Look away, embarrassed") });
 
     click('[data-action="choice"][data-choice-id="c1"]');
-    await sleep(500);
+    await sleep(600);
     results.push({ step: "branch_a", ok: text().includes("At The Gate A") });
 
-    click('[data-action="advance-text"]');
-    await sleep(200);
-    click('[data-action="next-episode"]');
+    click('[data-action="open-save"]');
+    await sleep(300);
+    results.push({ step: "open_save", ok: text().includes("Slot 1") && text().includes("Save Here") });
+
+    click('[data-action="save-slot"][data-slot="1"]');
+    await sleep(300);
+    results.push({ step: "save_slot", ok: text().includes("Slot 1") && text().includes("day-001a") });
+
+    click('[data-action="back-title"]');
+    await sleep(300);
+    click('[data-action="open-load"]');
+    await sleep(300);
+    results.push({ step: "open_load", ok: text().includes("Autosave") && text().includes("Slot 1") });
+
+    click('[data-action="load-slot"][data-slot="1"]');
     await sleep(500);
+    results.push({ step: "load_slot", ok: text().includes("At The Gate A") });
+
+    click('[data-action="advance-text"]');
+    await sleep(300);
+    click('[data-action="advance-text"]');
+    await sleep(300);
+    click('[data-action="next-episode"]');
+    await sleep(600);
     results.push({ step: "day2", ok: text().includes("Promise After School") && text().includes("Day 2") });
 
     click('[data-action="back-title"]');
@@ -58,17 +80,17 @@ $html = @'
     results.push({ step: "back_title", ok: exists('[data-action="continue"]') });
 
     click('[data-action="continue"]');
-    await sleep(400);
+    await sleep(500);
     results.push({ step: "continue", ok: text().includes("Promise After School") });
 
     click('[data-action="back-title"]');
     await sleep(300);
     click('[data-action="updates"]');
     await sleep(300);
-    results.push({ step: "updates", ok: text().includes("Added Episode 1") });
+    results.push({ step: "updates", ok: text().includes("Week One Prototype Added") });
 
     click('[data-action="open-update-link"]');
-    await sleep(500);
+    await sleep(600);
     results.push({ step: "view_only", ok: exists('[data-action="close-view-only"]') && text().includes("At The Gate") });
 
     click('[data-action="close-view-only"]');
@@ -77,7 +99,7 @@ $html = @'
     await sleep(300);
     click('[data-action="gallery"]');
     await sleep(300);
-    results.push({ step: "gallery", ok: text().includes("Morning At Gate") });
+    results.push({ step: "gallery", ok: text().includes("Morning At Gate") && text().includes("Locked") });
 
     click('[data-action="back-title"]');
     await sleep(300);
@@ -110,7 +132,7 @@ try {
     --headless=new `
     --disable-gpu `
     --allow-file-access-from-files `
-    --virtual-time-budget=15000 `
+    --virtual-time-budget=20000 `
     --dump-dom "http://127.0.0.1:8123/runtime_verify_tmp.html"
 } finally {
   Stop-Job $server | Out-Null

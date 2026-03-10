@@ -2,14 +2,20 @@
   {
     "date": "2026-03-11",
     "type": "episode",
-    "title": "Added Episode 1",
-    "description": "Published the intro episode where you meet Minori at the gate.",
+    "title": "Week One Prototype Added",
+    "description": "Added a five-day prototype route with same-day branches and three heroine touchpoints.",
     "link": "day-001"
   },
   {
     "date": "2026-03-11",
+    "type": "gallery",
+    "title": "Three Event CGs Added",
+    "description": "Unlocked CGs now include Minori at the gate, Toko in the library, and Hinata after practice."
+  },
+  {
+    "date": "2026-03-11",
     "type": "diary",
-    "title": "Added Minori Diary",
-    "description": "Added a short diary entry unlocked after reading episode 1."
+    "title": "Diary Entries Expanded",
+    "description": "Diary now includes entries for Minori, Toko, and Hinata."
   }
 ]

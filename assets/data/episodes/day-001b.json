@@ -11,9 +11,11 @@
   "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
   "text": [
     "Minori tilts her head for a moment, then quietly matches her pace to yours.",
-    "The two of you enter the school building in an awkward silence."
+    "The walk to the building is awkward, but she keeps stealing quick glances your way.",
+    "That little effort somehow feels more honest than a smooth conversation."
   ],
   "choices": [],
   "unlockGallery": ["cg-day001"],
+  "unlockDiary": ["diary-minori-001"],
   "nextEpisodeId": "day-002"
 }
