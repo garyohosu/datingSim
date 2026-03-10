@@ -1,28 +1,13 @@
-# 放課後シグナル クラス図
+# CLASS.md（暫定TDD版）
 
-Version: 1.0
+Version: 1.1-draft
+Status: Temporary source for TDD
 Last Updated: 2026-03-11
 
----
-
-## 目次
-
-1. [モジュール依存関係全体図](#1-モジュール依存関係全体図)
-2. [コアモジュール詳細](#2-コアモジュール詳細)
-   - [main.js](#21-mainjs)
-   - [router.js](#22-routerjs)
-   - [renderer.js](#23-rendererjs)
-   - [state.js](#24-statejs)
-   - [storage.js](#25-storagejs)
-   - [dataLoader.js](#26-dataloaderjs)
-   - [audio.js](#27-audiojs)
-3. [ゲーム状態データクラス](#3-ゲーム状態データクラス)
-4. [エピソードデータクラス](#4-エピソードデータクラス)
-5. [セーブ・設定データクラス](#5-セーブ設定データクラス)
-6. [マニフェスト・更新履歴データクラス](#6-マニフェスト更新履歴データクラス)
-7. [キャラクターデータクラス](#7-キャラクターデータクラス)
-8. [AI エージェント入出力契約](#8-ai-エージェント入出力契約)
-9. [列挙型・定数](#9-列挙型定数)
+## 位置づけ
+この文書は、TDD着手のために必要な最小責務境界を固定するための暫定クラス図である。  
+詳細設計の正本は `SPEC.md` / `USECASE.md` / `SEQUENCE.md` を優先する。  
+既存の旧CLASS.mdに記載された古いAI契約や過剰結合は、本暫定版では採用しない。
 
 ---
 
@@ -32,102 +17,18 @@ Last Updated: 2026-03-11
 classDiagram
     direction TB
 
-    class main["main.js"] {
+    class Main {
         +init() void
     }
-    class router["router.js"] {
-        +start() void
-        +navigateTo(screen) void
-    }
-    class renderer["renderer.js"] {
-        +renderTitle() void
-        +renderGame(episode, state) void
-        +renderGameViewOnly(episode) void
-        +renderGallery() void
-        +renderDiaryList() void
-        +renderUpdates() void
-    }
-    class stateJs["state.js"] {
-        +getState() GameState
-        +initState() void
-    }
-    class storageJs["storage.js"] {
-        +init() void
-        +saveAuto(state) void
-        +loadAuto() GameState
-    }
-    class dataLoader["dataLoader.js"] {
-        +loadEpisode(id) EpisodeData
-        +loadManifest(file) ManifestEntry[]
-    }
-    class audioJs["audio.js"] {
-        +init() void
-        +playBGM(id) void
-        +playSE(id) void
-    }
 
-    main --> router        : start
-    main --> storageJs     : init
-    main --> dataLoader    : loadManifest
-    main --> audioJs       : setupAudioContext
-    main --> stateJs       : init
-
-    router --> renderer    : render*
-
-    renderer --> stateJs   : getState / applyEffects
-    renderer --> storageJs : saveAuto / loadAuto
-    renderer --> dataLoader : loadEpisode
-    renderer --> audioJs   : playBGM / playSE
-    renderer --> router    : navigateTo
-```
-
----
-
-## 2. コアモジュール詳細
-
-### 2.1 main.js
-
-```mermaid
-classDiagram
-    class main {
-        +init() void
-        -loadSettings() void
-        -preloadManifests() void
-        -setupAudioContext() void
-        -initState(savedSettings) void
-        -startRouter() void
-    }
-```
-
----
-
-### 2.2 router.js
-
-```mermaid
-classDiagram
-    class router {
-        -currentScreen : string
-        -viewOnlyMode : boolean
-
+    class Router {
         +start() void
         +navigateTo(screen) void
         +setViewOnlyMode(flag) void
         +isViewOnly() boolean
-        -onHashChange() void
     }
-```
 
----
-
-### 2.3 renderer.js
-
-```mermaid
-classDiagram
-    class renderer {
-        -currentEpisode : EpisodeData
-        -currentTextIndex : int
-        -isAnimating : boolean
-
+    class Renderer {
         +renderTitle() void
         +renderGame(episode, state) void
         +renderGameViewOnly(episode) void
@@ -137,77 +38,25 @@ classDiagram
         +renderUpdates() void
         +renderSaveLoad(mode) void
         +renderSettings() void
-
-        -showText(block) void
-        -showChoices(choices) void
-        -onChoiceSelected(choice) void
-        -advanceText() void
-        -setBackground(path) void
-        -setCharacterImage(path) void
-        -notifyGalleryUnlocked(cgId) void
-        -notifyDiaryUnlocked(diaryId) void
-        -showErrorMessage(msg) void
+        +handleChoice(choice) void
+        +advanceText() void
+        +showError(message) void
     }
-```
 
----
-
-### 2.4 state.js
-
-```mermaid
-classDiagram
-    class state {
-        -currentDay : int
-        -currentEpisodeId : string
-        -affection : Affection
-        -params : Params
-        -flags : object
-        -choices : ChoiceRecord[]
-        -seenEpisodes : string[]
-        -seenEvents : string[]
-        -galleryCGUnlocked : string[]
-        -seenDiaries : string[]
-        -endingsReached : EndingRecord[]
-        -skipMode : boolean
-        -textLog : string[]
-        -version : int
-
-        +initState() void
-        +restoreState(saveData) void
+    class StateStore {
+        +initState() GameState
         +getState() GameState
+        +restoreState(save) void
         +applyEffects(effects) void
-        +addSeenEpisode(episodeId) void
-        +isSeenEpisode(episodeId) boolean
-        +addSeenEvent(eventId) void
         +recordChoice(episodeId, choiceId) void
-        +advanceDay() void
+        +addSeenEpisode(episodeId) void
         +setCurrentEpisodeId(id) void
-        +setSkipMode(flag) void
-        +isSkipMode() boolean
-        +appendTextLog(text) void
-        +getTextLog() string[]
-        +isGalleryUnlocked(cgId) boolean
-        +unlockGalleryItem(cgId) void
+        +advanceDay() void
         +getGalleryUnlocked() string[]
-        +isDiaryUnlocked(diaryId) boolean
-        +unlockDiaryEntry(diaryId) void
-        +checkEndingCondition() EndingResult
-        +recordEndingReached(heroine, type) void
-        +setEndingHeroine(heroine) void
+        +getSeenEpisodes() string[]
     }
-```
 
----
-
-### 2.5 storage.js
-
-```mermaid
-classDiagram
-    class storage {
-        -KEYS_PROGRESS : string[]
-        -KEY_SETTINGS : string
-        -SAVE_VERSION : int
-
+    class Storage {
         +init() Settings
         +hasAnySave() boolean
         +saveAuto(state) void
@@ -215,66 +64,22 @@ classDiagram
         +saveManual(slot, state) void
         +loadManual(slot) GameState
         +listSaves() SaveSlot[]
-        +resetProgress() void
-        +resetAll() void
         +loadSettings() Settings
         +saveSettings(settings) void
-        -serialize(state) string
-        -deserialize(json) GameState
-        -checkVersion(data) boolean
+        +resetProgress() void
+        +resetAll() void
     }
-```
 
-**localStorage キー一覧:**
-
-| キー | 内容 | 削除タイミング |
-|------|------|--------------|
-| `hokago_signal_autosave` | オートセーブ | resetProgress / resetAll |
-| `hokago_signal_save_1` | 手動セーブ1 | resetProgress / resetAll |
-| `hokago_signal_save_2` | 手動セーブ2 | resetProgress / resetAll |
-| `hokago_signal_save_3` | 手動セーブ3 | resetProgress / resetAll |
-| `hokago_signal_settings` | 音量・ミュート設定 | resetAll のみ |
-
----
-
-### 2.6 dataLoader.js
-
-```mermaid
-classDiagram
-    class dataLoader {
-        -episodeCache : object
-        -manifestCache : object
-
-        +loadManifest(filename) ManifestEntry[]
+    class DataLoader {
+        +loadManifest(filename) object[]
         +loadEpisode(episodeId) EpisodeData
-        +loadCharacter(characterId) CharacterData
-        +loadDiaryManifest() DiaryDefinition[]
-        +loadDiary(diaryId) DiaryData
-        +getDiaryEntriesForEpisode(episodeId) DiaryEntry[]
-        +loadEnding(heroine, params) EpisodeData
-        +loadGalleryManifest() GalleryEntry[]
-        +loadUpdateManifest() UpdateEntry[]
+        +loadDiaryManifest() object[]
+        +loadDiary(diaryId) object
+        +loadUpdateManifest() object[]
         +isBGMDefined(bgmId) boolean
-        -fetchJSON(path) object
     }
-```
 
----
-
-### 2.7 audio.js
-
-```mermaid
-classDiagram
-    class audio {
-        -audioContext : AudioContext
-        -isInitialized : boolean
-        -isMuted : boolean
-        -bgmVolume : float
-        -seVolume : float
-        -currentBGMId : string
-        -bgmFallbackId : string
-
-        +setupAudioContext() void
+    class Audio {
         +init() void
         +playBGM(bgmId) void
         +stopBGM() void
@@ -282,556 +87,248 @@ classDiagram
         +setBGMVolume(vol) void
         +setSEVolume(vol) void
         +setMute(muted) void
-        -fadeOut(duration) void
-        -synthesizeBGM(bgmId) void
-        -generateSE(seId) void
+        +applySettings(settings) void
     }
+
+    Main --> Router
+    Main --> Storage
+    Main --> DataLoader
+    Main --> Audio
+    Main --> StateStore
+
+    Router --> Renderer
+
+    Renderer --> StateStore
+    Renderer --> Storage
+    Renderer --> DataLoader
+    Renderer --> Audio
+    Renderer --> Router
 ```
+
+## 2. 責務固定ルール
+
+### 2.1 `main.js`
+
+- アプリ起動
+- 初期設定の読込
+- 各モジュール初期化
+- ルーター開始
+
+### 2.2 `router.js`
+
+- 画面遷移の単一窓口
+- タイトル / ゲーム / ギャラリー / 日記 / 更新履歴 / 設定 への遷移
+- 閲覧モードフラグの管理
+
+### 2.3 `renderer.js`
+
+- 画面描画
+- テキスト送り
+- 選択肢クリック受付
+- `state` / `storage` / `router` / `audio` / `dataLoader` への委譲
+- ゲームルールそのものは持たない
+
+### 2.4 `state.js`
+
+- ゲーム状態保持
+- パラメータ更新
+- 好感度更新
+- フラグ記録
+- 日付進行
+- 既読 / 解放状態管理
+- `advanceDay()` は同日分岐の読了時のみ呼ばれ、選択確定時には `currentDay` を進めない
+
+### 2.5 `storage.js`
+
+- localStorage 永続化
+- オートセーブ / 手動セーブ / ロード
+- 設定保存
+- リセット
+- セーブ破損時の復元可否判定
+- `resetProgress()` は進行データのみ削除し、収集要素は保持する
+- `resetAll()` は設定・収集要素を含む全ローカルデータを削除する
+
+### 2.6 `dataLoader.js`
+
+- JSON読込
+- episode / manifest / diary / update データ取得
+- 必要最小限のキャッシュ
+
+### 2.7 `audio.js`
+
+- Audio初期化
+- BGM再生 / 停止
+- SE再生
+- 音量 / ミュート設定反映
+
+## 3. TDDでの非対象
+
+以下は本クラス図では扱わず、別文書で管理する。
+
+- AIエージェント契約
+- Scenario / Data / Publisher のI/O
+- 画像生成ワークフロー
+- GitHub Pages 公開処理
+
+これらは `USECASE.md` の AIエージェント章を正本とする。
+
+## 4. AIパイプライン境界メモ
+
+AIパイプラインはフロント実装と分離する。
+
+- Scenario Agent: 中間生成物を出力
+- Data Agent: 正式 `episode JSON` / `updated_manifest` / `updated_updates_json` を生成
+- Publisher Agent: 更新済み成果物を受け取り公開のみ行う
+- Scenario Agent の人物構成正本は `characters`
+- Scenario Agent の画像仕様正本は `imageRequirements`
 
 ---
 
-## 3. ゲーム状態データクラス
+## 5. テスト対象一覧
 
-```mermaid
-classDiagram
-    class GameState {
-        +version : int
-        +currentDay : int
-        +currentEpisodeId : string
-        +affection : Affection
-        +params : Params
-        +flags : object
-        +choices : ChoiceRecord[]
-        +seenEpisodes : string[]
-        +seenEvents : string[]
-        +galleryCGUnlocked : string[]
-        +seenDiaries : string[]
-        +endingsReached : EndingRecord[]
-        +savedAt : string
-    }
+TDDの最初の着手点は、UIより先に壊れやすいロジック核を押さえる。  
+`SEQUENCE.md` の流れに合わせ、状態遷移、保存、削除、解放判定を優先する。
 
-    class Affection {
-        +minori : int
-        +toko : int
-        +hinata : int
-    }
+### 優先度A: `state.js`
 
-    class Params {
-        +study : int
-        +sports : int
-        +charm : int
-        +care : int
-        +stress : int
-    }
+1. `initState` が初期状態を正しく返す
+2. `applyEffects` が `affection` / `params` / `flags` を更新する
+3. `recordChoice` が選択履歴を追加する
+4. `addSeenEpisode` が既読エピソードを追加する
+5. `setCurrentEpisodeId` が `currentEpisodeId` を更新する
+6. `advanceDay` が `currentDay` を +1 し、次話進行に必要な状態を更新する
+7. `getGalleryUnlocked` / `getSeenEpisodes` が現在状態を返す
 
-    class ChoiceRecord {
-        +episodeId : string
-        +choiceId : string
-    }
+### 優先度A: `storage.js`
 
-    class EndingRecord {
-        +heroine : string
-        +endingType : string
-        +reachedAt : string
-    }
+1. `hasAnySave` が autosave の有無を正しく判定する
+2. `saveAuto` / `loadAuto` が状態を往復保存できる
+3. `saveManual` / `loadManual` がスロット単位で保存できる
+4. `listSaves` が空 / 使用中スロットを正しく返す
+5. `loadSettings` / `saveSettings` が設定を保持する
+6. `resetProgress` が進行データのみ削除する
+7. `resetAll` が進行データと設定を削除する
+8. 破損データ読み込み時に安全に失敗する
 
-    class EndingResult {
-        +endingType : string
-        +heroine : string
-        +candidates : string[]
-    }
+### 優先度B: `dataLoader.js`
 
-    GameState --* Affection      : affection
-    GameState --* Params         : params
-    GameState --* ChoiceRecord   : choices 0..*
-    GameState --* EndingRecord   : endingsReached 0..*
-```
+1. `loadEpisode` が正しいJSONを返す
+2. `loadManifest` が manifest を返す
+3. `loadDiaryManifest` / `loadDiary` / `loadUpdateManifest` が正しいデータを返す
+4. `isBGMDefined` が存在確認を返す
+5. 同一データの再読込時にキャッシュが効く
 
-**Params 値域:**
+### 優先度B: `router.js`
 
-| パラメータ | 初期値 | 範囲 | ヒロイン親和 |
-|-----------|--------|------|------------|
-| study | 10 | 0〜99 | toko |
-| sports | 10 | 0〜99 | hinata |
-| charm | 10 | 0〜99 | 共通 |
-| care | 10 | 0〜99 | minori |
-| stress | 0 | 0〜99 | (負方向) |
+1. `start` が初期画面へ遷移する
+2. `navigateTo` が画面名に応じて `renderer` を呼ぶ
+3. `setViewOnlyMode` / `isViewOnly` が閲覧モードを保持する
+
+### 優先度C: `renderer.js`
+
+1. `renderTitle` が save の有無でボタン強調を切り替える
+2. `handleChoice` が `state.applyEffects` / `recordChoice` / `addSeenEpisode` を順に呼ぶ
+3. 分岐読了時に `advanceDay` / `saveAuto` / 次話読込を呼ぶ
+4. `renderGallery` が unlocked と全定義を突き合わせる
+5. `renderDiaryList` が既読エピソードに応じてロック表示を切り替える
+6. `renderUpdates` が updates manifest を表示する
+7. エラー時に `showError` を表示する
+
+### 優先度C: `audio.js`
+
+1. `init` が二重初期化を避ける
+2. `playBGM` が BGM を切り替える
+3. `playSE` が SE を再生する
+4. `setBGMVolume` / `setSEVolume` / `setMute` が設定を反映する
 
 ---
 
-## 4. エピソードデータクラス
+## 6. 実装順序
 
-```mermaid
-classDiagram
-    class EpisodeData {
-        +id : string
-        +day : int
-        +title : string
-        +season : string
-        +weather : string
-        +location : string
-        +characters : string[]
-        +bgm : string
-        +background : string
-        +sceneImage : string
-        +text : string[]
-        +choices : Choice[]
-        +nextEpisodeId : string
-    }
+ここは依存の少ない順に並べる。
 
-    class Choice {
-        +id : string
-        +label : string
-        +nextEpisodeId : string
-        +effects : Effects
-    }
+### Step 1
 
-    class Effects {
-        +affection : object
-        +params : object
-        +flags : object
-    }
+`state.js` を実装する
 
-    EpisodeData --* Choice  : choices 0..*
-    Choice --* Effects      : effects
-```
+- `initState`
+- `getState`
+- `applyEffects`
+- `recordChoice`
+- `addSeenEpisode`
+- `setCurrentEpisodeId`
+- `advanceDay`
 
-**episodeId 命名規則:**
+### Step 2
 
-| 形式 | 例 | 意味 |
-|------|----|------|
-| `day-{NNN}` | `day-001` | 通常1日分エピソード |
-| `day-{NNN}a` | `day-002a` | 同日分岐 A |
-| `day-{NNN}b` | `day-002b` | 同日分岐 B |
-| `ending-{heroine}` | `ending-minori` | エンディングエピソード |
+`storage.js` を実装する
 
----
+- `hasAnySave`
+- `saveAuto` / `loadAuto`
+- `saveManual` / `loadManual`
+- `listSaves`
+- `loadSettings` / `saveSettings`
+- `resetProgress` / `resetAll`
 
-## 5. セーブ・設定データクラス
+### Step 3
 
-```mermaid
-classDiagram
-    class SaveData {
-        +version : int
-        +state : GameState
-        +savedAt : string
-    }
+`dataLoader.js` を実装する
 
-    class SaveSlot {
-        +slot : int
-        +isEmpty : boolean
-        +currentDay : int
-        +currentEpisodeId : string
-        +affectionSummary : Affection
-        +savedAt : string
-    }
+- `loadEpisode`
+- `loadManifest`
+- `loadDiaryManifest`
+- `loadDiary`
+- `loadUpdateManifest`
+- `isBGMDefined`
 
-    class Settings {
-        +bgmVolume : float
-        +seVolume : float
-        +muted : boolean
-    }
+### Step 4
 
-    SaveData --* GameState : state
-```
+`router.js` を実装する
 
-**セーブスロット一覧:**
+- `start`
+- `navigateTo`
+- `setViewOnlyMode`
+- `isViewOnly`
 
-| スロット | 用途 | 自動操作 |
-|---------|------|---------|
-| autosave | オートセーブ | エピソード読了・日付更新後 |
-| save_1 | 手動スロット1 | プレイヤー操作のみ |
-| save_2 | 手動スロット2 | プレイヤー操作のみ |
-| save_3 | 手動スロット3 | プレイヤー操作のみ |
+### Step 5
+
+`audio.js` を実装する
+
+- `init`
+- `playBGM`
+- `playSE`
+- 音量設定系
+
+### Step 6
+
+`renderer.js` を実装する
+
+- `renderTitle`
+- `renderGame`
+- `handleChoice`
+- `renderGallery`
+- `renderDiaryList`
+- `renderUpdates`
+- `renderSaveLoad`
+- `renderSettings`
+
+### Step 7
+
+結合テスト
+
+- 最初から開始
+- 続きから再開
+- 分岐遷移
+- オートセーブ
+- 全データ削除
+- ギャラリー閲覧
+- 日記閲覧
+- 更新履歴閲覧
 
 ---
 
-## 6. マニフェスト・更新履歴データクラス
+## 7. 固定しておく判断
 
-```mermaid
-classDiagram
-    class ManifestEntry {
-        +id : string
-        +day : int
-        +title : string
-        +characters : string[]
-        +season : string
-        +addedAt : string
-        +summary : string
-    }
-
-    class GalleryEntry {
-        +cgId : string
-        +title : string
-        +heroine : string
-        +episodeId : string
-        +imagePath : string
-    }
-
-    class UpdateEntry {
-        +date : string
-        +type : string
-        +title : string
-        +description : string
-        +link : string
-    }
-
-    class DiaryDefinition {
-        +diaryId : string
-        +heroine : string
-        +episodeId : string
-        +title : string
-    }
-
-    class DiaryData {
-        +diaryId : string
-        +heroine : string
-        +title : string
-        +text : string
-        +unlockedBy : string
-    }
-
-    class BGMConfig {
-        +id : string
-        +fallback : string
-        +tracks : BGMTrack[]
-    }
-
-    class BGMTrack {
-        +id : string
-        +type : string
-        +params : object
-    }
-
-    BGMConfig --* BGMTrack : tracks 1..*
-```
-
-**UpdateEntry.type 値:**
-
-| 値 | 意味 |
-|----|------|
-| `episode` | 新規エピソード追加 |
-| `image` | 新規画像追加 |
-| `diary` | 新規日記追加 |
-| `event` | 新規イベント追加 |
-| `fix` | 重要な不具合修正 |
-
----
-
-## 7. キャラクターデータクラス
-
-```mermaid
-classDiagram
-    class CharacterData {
-        +id : string
-        +name : string
-        +type : string
-        +traits : string[]
-        +defaultSprite : string
-        +expressions : Expressions
-        +profile : CharacterProfile
-    }
-
-    class Expressions {
-        +normal : string
-        +smile : string
-        +shy : string
-        +surprised : string
-        +troubled : string
-        +angry_soft : string
-        +soft_smile : string
-        +confused : string
-        +serious : string
-        +big_smile : string
-        +sad : string
-        +excited : string
-    }
-
-    class CharacterProfile {
-        +grade : string
-        +club : string
-        +favoritePlace : string
-        +summary : string
-    }
-
-    CharacterData --* Expressions     : expressions
-    CharacterData --* CharacterProfile : profile
-```
-
-**キャラクター一覧:**
-
-| id | 名前 | 役割 | ホームグラウンド |
-|----|------|------|----------------|
-| `minori` | 朝倉みのり | 幼なじみ | 通学路・校門・帰り道 |
-| `toko` | 白瀬透子 | 才女 | 図書室・窓際・夕方の教室 |
-| `hinata` | 夏川ひなた | 元気系 | 校庭・体育館前・公園 |
-
----
-
-## 8. AI エージェント入出力契約
-
-```mermaid
-classDiagram
-    direction LR
-
-    class PlannerAgent {
-        <<Agent>>
-        +input_currentDay : int
-        +input_currentEpisodeId : string
-        +input_affection : Affection
-        +input_params : Params
-        +input_flags : object
-        +input_recentEpisodes : string[]
-        +output : PlannerOutput
-        +run() PlannerOutput
-    }
-
-    class PlannerOutput {
-        +day : int
-        +theme : string
-        +season : string
-        +weather : string
-        +location : string
-        +featuredHeroine : string
-        +supportHeroines : string[]
-        +emotionalTone : string
-        +episodePurpose : string
-        +keyEvent : string
-        +choiceDirection : string
-        +notesForScenario : string
-    }
-
-    class ScenarioAgent {
-        <<Agent>>
-        +input_plannerOutput : PlannerOutput
-        +input_recentEpisodes : string[]
-        +input_affection : Affection
-        +input_params : Params
-        +input_flags : object
-        +output : ScenarioIntermediate
-        +run() ScenarioIntermediate
-    }
-
-    class ScenarioIntermediate {
-        <<中間生成物>>
-        +episodeId : string
-        +day : int
-        +title : string
-        +summary : string
-        +featuredHeroine : string
-        +supportHeroines : string[]
-        +location : string
-        +bgm : string
-        +background : string
-        +sceneImage : string
-        +textBlocks : string[]
-        +choices : ScenarioChoice[]
-        +nextEpisodeId : string
-        +imageRequirements : ImageRequirements
-        +writerComment : string
-    }
-
-    class ScenarioChoice {
-        +id : string
-        +label : string
-        +intent : string
-        +nextEpisodeId : string
-        +effects : Effects
-    }
-
-    class ImageRequirements {
-        +needNewImage : boolean
-        +imageType : string
-        +characters : string[]
-        +location : string
-        +timeOfDay : string
-        +weather : string
-        +emotion : string
-        +compositionNote : string
-    }
-
-    class ConsistencyAgent {
-        <<Agent>>
-        +input_episodeJSON : ScenarioIntermediate
-        +input_characterData : CharacterData[]
-        +input_recentEpisodes : string[]
-        +input_flags : object
-        +output : ConsistencyResult
-        +run() ConsistencyResult
-    }
-
-    class ConsistencyResult {
-        +passed : boolean
-        +issues : ConsistencyIssue[]
-        +summary : string
-    }
-
-    class ConsistencyIssue {
-        +severity : string
-        +field : string
-        +message : string
-        +suggestion : string
-    }
-
-    class DataAgent {
-        <<Agent>>
-        +input_scenarioIntermediate : ScenarioIntermediate
-        +input_currentManifest : ManifestEntry[]
-        +output : DataAgentOutput
-        +run() DataAgentOutput
-    }
-
-    class DataAgentOutput {
-        +validatedEpisode : EpisodeData
-        +updatedManifest : ManifestEntry[]
-        +updatedUpdatesJson : UpdateEntry[]
-        +validationErrors : string[]
-        +summary : string
-    }
-
-    class PublisherAgent {
-        <<Agent>>
-        +input_episodeData : EpisodeData
-        +input_manifestFiles : object
-        +input_imageFiles : string[]
-        +output : PublisherResult
-        +run() PublisherResult
-    }
-
-    class PublisherResult {
-        +status : string
-        +stepFailed : string
-        +committedFiles : string[]
-        +commitHash : string
-        +log : string
-    }
-
-    PlannerAgent --> PlannerOutput         : generates
-    PlannerOutput --> ScenarioAgent        : input
-    ScenarioAgent --> ScenarioIntermediate : generates
-    ScenarioIntermediate --> ConsistencyAgent : input
-    ConsistencyAgent --> ConsistencyResult  : generates
-    ConsistencyResult --> ScenarioAgent    : retry if not passed
-    ScenarioIntermediate --> DataAgent     : input (after HR approval)
-    DataAgent --> DataAgentOutput          : generates
-    DataAgentOutput --> PublisherAgent     : input (after HR approval)
-    PublisherAgent --> PublisherResult     : generates
-
-    ScenarioIntermediate --* ScenarioChoice    : choices 1..*
-    ScenarioIntermediate --* ImageRequirements : imageRequirements
-    ConsistencyResult --* ConsistencyIssue     : issues 0..*
-```
-
-**Scenario → Data 変換契約:**
-
-| ScenarioIntermediate フィールド | EpisodeData フィールド | 備考 |
-|-------------------------------|----------------------|------|
-| `episodeId` | `id` | そのまま |
-| `textBlocks` | `text` | そのまま |
-| `featuredHeroine` + `supportHeroines` | `characters` | 主役先頭で結合 |
-| `imageRequirements` | *(除外)* | 制作メタデータ・正式JSONに含めない |
-| `writerComment` | *(除外)* | 内部レビュー用・正式JSONに含めない |
-
----
-
-## 9. 列挙型・定数
-
-```mermaid
-classDiagram
-    class Screen {
-        <<enumeration>>
-        title
-        game
-        saveload
-        settings
-        gallery
-        diary
-        updates
-        ending
-    }
-
-    class Season {
-        <<enumeration>>
-        spring
-        summer
-        autumn
-        winter
-    }
-
-    class Weather {
-        <<enumeration>>
-        sunny
-        cloudy
-        rainy
-        snowy
-    }
-
-    class Heroine {
-        <<enumeration>>
-        minori
-        toko
-        hinata
-        none
-    }
-
-    class EmotionalTone {
-        <<enumeration>>
-        warm
-        melancholy
-        exciting
-        calm
-        tension
-    }
-
-    class EndingType {
-        <<enumeration>>
-        heroine_route
-        friend_end
-        miss_end
-        normal_end
-    }
-
-    class BGMTrackId {
-        <<enumeration>>
-        title_theme
-        daily_theme
-        evening_theme
-        tension_theme
-        confession_theme
-    }
-
-    class SEId {
-        <<enumeration>>
-        page_advance
-        decide
-        save
-        load
-        affection_up
-        gallery_unlock
-        diary_unlock
-        day_change
-    }
-
-    class ImageType {
-        <<enumeration>>
-        event_cg
-        sprite_only
-        background_only
-    }
-
-    class ConsistencySeverity {
-        <<enumeration>>
-        error
-        warning
-        info
-    }
-```
-
-**BGM フォールバック仕様:**
-
-| 状況 | 動作 |
-|------|------|
-| 指定 BGM が実装済み | その BGM を再生 |
-| 指定 BGM が未実装 | `daily_theme` にフォールバック |
-| MVP 必須実装 | `title_theme` / `daily_theme` の2曲 |
-| MVP 任意 | `evening_theme` / `tension_theme` / `confession_theme` |
+- 旧CLASS.mdのAI契約は採用しない
+- AI側は `Scenario Agent = 中間生成物`、`Data Agent = 正式 JSON と updated_manifest / updated_updates_json`、`Publisher Agent = 公開のみ` を正本にする
+- フロント側は `renderer = 表示中心`、`state = 状態更新`、`storage = 永続化`、`router = 画面切替` で責務を固定する
