@@ -30,6 +30,11 @@ Last Updated: 2026-03-10
 21. [AI更新パイプライン（正常系）](#21-ai更新パイプライン正常系)
 22. [AI更新パイプライン（失敗系）](#22-ai更新パイプライン失敗系)
 23. [Consistency Agent 差し戻し](#23-consistency-agent-差し戻し)
+24. [既読スキップ](#24-既読スキップ)
+25. [テキストログ（バックログ）表示](#25-テキストログバックログ表示)
+26. [ギャラリー解放トリガー](#26-ギャラリー解放トリガー)
+27. [日記解放トリガー](#27-日記解放トリガー)
+28. [エンディング判定（Day 30 完了時）](#28-エンディング判定day-30-完了時)
 
 ---
 
@@ -907,6 +912,196 @@ sequenceDiagram
     CO-->>SC: passed: true\nsummary: "問題なし。自然な展開です。"
     deactivate CO
 ```
+
+---
+
+## 24. 既読スキップ
+
+```mermaid
+sequenceDiagram
+    participant P as 👤 プレイヤー
+    participant RE as renderer.js
+    participant ST as state.js
+    participant AU as audio.js
+
+    P->>RE: スキップボタン押下（長押し or 専用ボタン）
+    RE->>ST: setSkipMode(true)
+
+    loop 自動テキスト送り
+        RE->>ST: isSeenEpisode(currentEpisodeId)
+
+        alt 既読エピソード内のテキスト
+            RE->>AU: playSE("page_advance") ※音量低め or なし
+            RE->>RE: 次のテキストブロックへ高速送り
+        else 未読テキストブロックに到達
+            RE->>ST: setSkipMode(false)
+            RE-->>P: スキップ停止・通常表示に戻す
+        end
+
+        alt 選択肢に到達
+            RE->>ST: setSkipMode(false)
+            RE-->>P: スキップ停止・選択肢を表示
+        end
+    end
+
+    opt スキップボタン再押下（途中キャンセル）
+        P->>RE: スキップ解除
+        RE->>ST: setSkipMode(false)
+        RE-->>P: 現在テキストで通常表示
+    end
+```
+
+> **未確定事項:** SQ1 参照（QandA.md）
+
+---
+
+## 25. テキストログ（バックログ）表示
+
+```mermaid
+sequenceDiagram
+    participant P as 👤 プレイヤー
+    participant RE as renderer.js
+    participant ST as state.js
+
+    P->>RE: ログボタン押下 or 上スワイプ
+    RE->>ST: getTextLog()
+    ST-->>RE: textLog[]（直近 N 件のテキストブロック）
+
+    RE-->>P: ログパネルをオーバーレイ表示\n（最新テキストを下端に表示）
+
+    loop スクロール操作
+        P->>RE: 上スクロール
+        RE-->>P: 過去のテキストを表示
+    end
+
+    P->>RE: 「閉じる」またはバックジェスチャー
+    RE-->>P: ログパネルを閉じてゲーム画面に戻る
+
+    Note over RE: ゲーム状態・seenEpisodes は変化しない
+```
+
+> **未確定事項:** SQ2 参照（QandA.md）
+
+---
+
+## 26. ギャラリー解放トリガー
+
+```mermaid
+sequenceDiagram
+    participant RE as renderer.js
+    participant ST as state.js
+    participant S as storage.js
+    participant AU as audio.js
+    participant P as 👤 プレイヤー
+
+    Note over RE: エピソード中 sceneImage の初回表示時
+
+    RE->>RE: sceneImage をレンダリング
+    RE->>ST: isGalleryUnlocked(cgId)
+    ST-->>RE: false（未解放）
+
+    RE->>ST: unlockGalleryItem(cgId)
+    activate ST
+    ST->>ST: galleryCGUnlocked.add(cgId)
+    ST-->>RE: 解放完了
+    deactivate ST
+
+    RE->>AU: playSE("gallery_unlock")
+    RE-->>P: 「CG解放」通知を小さく表示\n（ゲーム進行を妨げない）
+
+    RE->>S: saveAuto(state)
+    Note over S: ギャラリー解放状態を localStorage に保存
+```
+
+> **未確定事項:** SQ4 参照（QandA.md）
+
+---
+
+## 27. 日記解放トリガー
+
+```mermaid
+sequenceDiagram
+    participant RE as renderer.js
+    participant ST as state.js
+    participant DL as dataLoader.js
+    participant S as storage.js
+    participant AU as audio.js
+    participant P as 👤 プレイヤー
+
+    Note over RE: エピソード読了・選択肢確定後
+
+    RE->>ST: addSeenEpisode(episodeId)
+    activate ST
+    ST->>ST: seenEpisodes.add(episodeId)
+    deactivate ST
+
+    RE->>DL: getDiaryEntriesForEpisode(episodeId)
+    DL-->>RE: diaryEntries[]（この話に対応する日記エントリ一覧）
+
+    loop 対応日記エントリをループ
+        RE->>ST: isDiaryUnlocked(diaryId)
+        ST-->>RE: false（未解放）
+        RE->>ST: unlockDiaryEntry(diaryId)
+        ST->>ST: seenDiaries.add(diaryId)
+    end
+
+    alt 新規日記が1件以上解放された
+        RE->>AU: playSE("diary_unlock")
+        RE-->>P: 「日記が追加されました」通知
+    end
+
+    RE->>S: saveAuto(state)
+```
+
+---
+
+## 28. エンディング判定（Day 30 完了時）
+
+```mermaid
+sequenceDiagram
+    participant RE as renderer.js
+    participant ST as state.js
+    participant DL as dataLoader.js
+    participant AU as audio.js
+    participant S as storage.js
+    participant P as 👤 プレイヤー
+
+    Note over RE: Day 30 最終エピソード読了後
+
+    RE->>ST: checkEndingCondition()
+    activate ST
+
+    ST->>ST: route_locked_* フラグを確認
+    alt 個別ルート確定フラグあり
+        ST-->>RE: endingType="heroine_route"\nheroine=flagged_heroine
+    else フラグなし → 好感度比較
+        ST->>ST: affection.minori / toko / hinata を比較
+        alt 単独最大
+            ST-->>RE: endingType="heroine_route"\nheroine=max_heroine
+        else 同率
+            ST-->>RE: endingType="choose"\ncandidates=[tied_heroines]
+        end
+    end
+    deactivate ST
+
+    alt endingType == "choose"
+        RE-->>P: エンディング選択画面\n（同率ヒロインから選ぶ）
+        P->>RE: ヒロイン選択
+        RE->>ST: setEndingHeroine(selected)
+    end
+
+    RE->>DL: loadEnding(heroine, params)
+    DL-->>RE: endingEpisodeData
+
+    RE->>AU: playBGM("confession_theme")
+    RE-->>P: エンディングエピソード表示
+
+    RE->>ST: recordEndingReached(heroine, endingType)
+    RE->>S: saveAuto(state)
+    Note over S: エンディング到達記録を保存\n（全データ削除まで保持）
+```
+
+> **未確定事項:** SQ3 参照（QandA.md）
 
 ---
 
