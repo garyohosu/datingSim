@@ -1,0 +1,19 @@
+{
+  "id": "day-001a",
+  "day": 1,
+  "title": "At The Gate A",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "school_gate",
+  "characters": ["minori"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "Minori smiles with visible relief and slows down so the two of you can walk together.",
+    "You head toward the classroom side by side."
+  ],
+  "choices": [],
+  "unlockGallery": ["cg-day001"],
+  "nextEpisodeId": "day-002"
+}

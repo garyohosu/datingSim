@@ -1,0 +1,19 @@
+{
+  "id": "day-001b",
+  "day": 1,
+  "title": "At The Gate B",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "school_gate",
+  "characters": ["minori"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "Minori tilts her head for a moment, then quietly matches her pace to yours.",
+    "The two of you enter the school building in an awkward silence."
+  ],
+  "choices": [],
+  "unlockGallery": ["cg-day001"],
+  "nextEpisodeId": "day-002"
+}

@@ -1,0 +1,5 @@
+[
+  { "id": "title_theme", "type": "synth" },
+  { "id": "daily_theme", "type": "synth" },
+  { "id": "evening_theme", "type": "synth" }
+]

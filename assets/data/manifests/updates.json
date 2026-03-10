@@ -1,0 +1,15 @@
+[
+  {
+    "date": "2026-03-11",
+    "type": "episode",
+    "title": "Added Episode 1",
+    "description": "Published the intro episode where you meet Minori at the gate.",
+    "link": "day-001"
+  },
+  {
+    "date": "2026-03-11",
+    "type": "diary",
+    "title": "Added Minori Diary",
+    "description": "Added a short diary entry unlocked after reading episode 1."
+  }
+]

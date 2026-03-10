@@ -1,0 +1,19 @@
+{
+  "id": "day-002",
+  "day": 2,
+  "title": "Promise After School",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "road_after_school",
+  "characters": ["minori"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_road_after_school.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "On the way home after school, Minori suddenly stops walking.",
+    "She says she will come a little earlier again tomorrow."
+  ],
+  "choices": [],
+  "unlockGallery": [],
+  "nextEpisodeId": null
+}

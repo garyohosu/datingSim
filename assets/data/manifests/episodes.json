@@ -1,0 +1,20 @@
+[
+  {
+    "id": "day-001",
+    "day": 1,
+    "title": "At The Gate",
+    "characters": ["minori"],
+    "season": "spring",
+    "addedAt": "2026-03-11",
+    "summary": "Intro episode where you meet Minori at the school gate."
+  },
+  {
+    "id": "day-002",
+    "day": 2,
+    "title": "Promise After School",
+    "characters": ["minori"],
+    "season": "spring",
+    "addedAt": "2026-03-11",
+    "summary": "A short after-school scene where the distance between you and Minori narrows."
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "id": "day-001",
+  "day": 1,
+  "title": "At The Gate",
+  "season": "spring",
+  "weather": "sunny",
+  "location": "school_gate",
+  "characters": ["minori"],
+  "bgm": "daily_theme",
+  "background": "assets/images/backgrounds/bg_school_gate_morning.webp",
+  "sceneImage": "assets/images/events/event_day001_school_gate_minori.webp",
+  "text": [
+    "A little of the morning chill still lingers in front of the school gate.",
+    "Minori notices you first and gives a small wave."
+  ],
+  "choices": [
+    {
+      "id": "c1",
+      "label": "Wave back with a smile",
+      "nextEpisodeId": "day-001a",
+      "effects": {
+        "affection": { "minori": 3 },
+        "params": { "care": 1 },
+        "flags": { "day001_positive": true }
+      }
+    },
+    {
+      "id": "c2",
+      "label": "Look away, embarrassed",
+      "nextEpisodeId": "day-001b",
+      "effects": {
+        "affection": { "minori": 1 },
+        "params": { "stress": 1 },
+        "flags": { "day001_shy": true }
+      }
+    }
+  ],
+  "unlockGallery": ["cg-day001"],
+  "nextEpisodeId": "day-002"
+}
