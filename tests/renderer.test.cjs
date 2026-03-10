@@ -22,6 +22,8 @@ function createDeps() {
       addSeenEpisode: (episodeId) => calls.push(['addSeenEpisode', episodeId]),
       setCurrentEpisodeId: (id) => calls.push(['setCurrentEpisodeId', id]),
       advanceDay: () => calls.push(['advanceDay']),
+      isGalleryUnlocked: (cgId) => cgId === 'cg-day001',
+      unlockGalleryItem: (cgId) => calls.push(['unlockGalleryItem', cgId]),
       getGalleryUnlocked: () => ['cg-day001'],
       getSeenEpisodes: () => ['day-001'],
     },
@@ -77,6 +79,30 @@ test('renderTitle toggles continue emphasis based on save presence', async () =>
 
   assert.equal(view.screen, 'title');
   assert.equal(view.emphasizeContinue, true);
+});
+
+test('renderGame unlocks gallery entries in normal mode and saves progress', async () => {
+  const renderer = require(rendererPath);
+  const deps = createDeps();
+  deps.state.isGalleryUnlocked = () => false;
+  renderer._setDependencies(deps);
+
+  const view = renderer.renderGame(
+    { id: 'day-001', bgm: 'daily_theme', text: ['a'], unlockGallery: ['cg-day001'] },
+    { currentDay: 1 }
+  );
+
+  assert.equal(view.screen, 'game');
+  assert.deepEqual(deps.calls, [
+    ['unlockGalleryItem', 'cg-day001'],
+    ['saveAuto', {
+      currentDay: 2,
+      currentEpisodeId: 'day-002a',
+      seenEpisodes: ['day-001'],
+      galleryUnlocked: ['cg-day001'],
+    }],
+    ['playBGM', 'daily_theme'],
+  ]);
 });
 
 test('handleChoice delegates to state in order', async () => {

@@ -56,7 +56,9 @@ async function bootstrap() {
   }
 
   function updateViewMeta(view) {
-    if (view && view.screen === 'game') {
+    const previousEpisodeId = currentView?.episode?.id || null;
+    const nextEpisodeId = view?.episode?.id || null;
+    if (view && view.screen === 'game' && previousEpisodeId !== nextEpisodeId) {
       currentTextIndex = 0;
     }
     currentView = view;

@@ -38,6 +38,19 @@ function renderGame(episode, state) {
   _currentEpisode = episode || null;
   _currentTextIndex = 0;
 
+  if (_state && episode && Array.isArray(episode.unlockGallery)) {
+    for (const cgId of episode.unlockGallery) {
+      if (!_state.isGalleryUnlocked || !_state.isGalleryUnlocked(cgId)) {
+        _state.unlockGalleryItem(cgId);
+      }
+    }
+  }
+
+  const snapshot = _getCurrentState();
+  if (_storage && snapshot && episode && Array.isArray(episode.unlockGallery) && episode.unlockGallery.length > 0) {
+    _storage.saveAuto(snapshot);
+  }
+
   if (_audio && episode && episode.bgm) {
     _audio.playBGM(episode.bgm);
   }
@@ -45,7 +58,7 @@ function renderGame(episode, state) {
   return {
     screen: 'game',
     episode,
-    state,
+    state: snapshot || state,
     currentText: episode?.text?.[0] ?? null,
     viewOnly: false,
   };
