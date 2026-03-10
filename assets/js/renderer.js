@@ -77,7 +77,7 @@ function renderGameViewOnly(episode) {
     episode,
     currentText: episode?.text?.[0] ?? null,
     viewOnly: true,
-    badge: '閲覧モード',
+    badge: 'View Only',
   };
 }
 
