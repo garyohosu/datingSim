@@ -188,7 +188,7 @@ graph TD
     R3 -->|承認| A6(Publisher Agent\nGitHubへpush・公開確認)
     R3 -->|差し戻し| A2
     A6 --> END{公開成功?}
-    END -->|成功| LOG1[updates.json 更新\n更新履歴に記録]
+    END -->|成功| LOG1[公開完了\n更新履歴も反映済み]
     END -->|失敗| LOG2[ログ保存\n前日の公開状態を維持]
 ```
 
@@ -211,6 +211,10 @@ graph LR
     PA --> GIT(git add / commit / push\nをatomicに実行する)
     GIT --> GHP(GitHub Pages\nに反映する)
 ```
+
+補足:
+- `updates.json` は公開前工程で更新し、episode JSON・episodes.json と同じ変更セットに含める
+- 公開処理が失敗した場合は push されないため、公開中の `updates.json` は変更されない
 
 ---
 
@@ -268,7 +272,9 @@ graph LR
 
 ### 5.2 Scenario Agent プロンプト（詳細版・GPT-5.4 向け強化版）
 
-Scenario Agent は本作の中核エージェント。本文・選択肢・分岐・画像要件・summary を一括で生成する。
+Scenario Agent は本作の中核エージェント。
+ただし出力は **正式保存用 episode JSON ではなく中間生成物** とする。
+人物構成の正本は `characters`、画像仕様の正本は `imageRequirements` とする。
 GPT-5.4 系モデル（長文コンテキスト・professional work 向け）の利用を推奨。
 
 ```text
@@ -419,11 +425,14 @@ notes_for_scenario: {notes_for_scenario}
 ━━━━━━━━━━━━━━━━
 
 以下のJSON形式のみ出力してください（説明文・前置き不要）。
+この出力は **Data Agent が正式 episode JSON に変換する前の中間生成物** です。
 
+- 人物構成の正本は `characters`
 - `characters` には登場人物全員を入れ、主役を先頭に配置する
+- 各要素は `id`, `role`, `importance` を持たせる
 - 同日分岐の `nextEpisodeId` は `day-XXXa` / `day-XXXb` を使い、同じ `day` を維持する
 - 翌日遷移はトップレベルの `nextEpisodeId` で表現する
-- `imageRequirements` は必ず出力する
+- 画像仕様の正本は `imageRequirements` とし、トップレベルに `background` / `sceneImage` を直接置かない
 - `summary` は `updates.json` と `episodes.json` の両方で再利用できる密度で書く
 
 {
@@ -431,12 +440,20 @@ notes_for_scenario: {notes_for_scenario}
   "day": <数値>,
   "title": "<その話のタイトル>",
   "summary": "<80〜140文字程度の要約>",
-  "featuredHeroine": "minori|toko|hinata|none",
-  "supportHeroines": [],
   "location": "<場所ID>",
   "bgm": "<bgm_id>",
-  "background": "assets/images/backgrounds/<背景ファイル名>.webp",
-  "sceneImage": "assets/images/events/day-<XXX>.webp",
+  "characters": [
+    {
+      "id": "minori",
+      "role": "featured",
+      "importance": "primary"
+    },
+    {
+      "id": "hinata",
+      "role": "support",
+      "importance": "secondary"
+    }
+  ],
   "textBlocks": [
     "<本文1>",
     "<本文2>",
@@ -469,11 +486,16 @@ notes_for_scenario: {notes_for_scenario}
   "imageRequirements": {
     "needNewImage": true,
     "imageType": "event_cg|sprite_only|background_only",
+    "background": "<背景IDまたは背景ファイル名の素材指定>",
+    "sceneImage": "<イベントCG IDまたは画像素材指定>",
     "characters": [],
     "location": "<場所ID>",
     "timeOfDay": "morning|day|evening|night",
     "weather": "sunny|cloudy|rainy|snowy",
     "emotion": "<一言>",
+    "lighting": "<光の状態>",
+    "camera": "<構図距離や視点>",
+    "characterPlacement": "<立ち位置や人数配置>",
     "compositionNote": "<構図メモ>"
   },
   "writerComment": "<この話で何を積み上げたか、次話へどうつなぐか>"
@@ -608,16 +630,25 @@ flags: {flags}
 以下のタスクを順番に実行してください。
 
 ## タスク
-1. 受け取ったエピソードJSONのフォーマットを検証・整形する
-2. IDの重複がないか episodes.json のマニフェストと照合する
-3. episodes.json マニフェストに新エピソードのエントリを追加する
-4. 日付・season・weather・characters の summary を生成する
+1. Scenario Agent の中間生成物を受け取る
+2. 中間生成物を正式 episode JSON に変換する
+3. IDの重複がないか episodes.json のマニフェストと照合する
+4. episodes.json マニフェストに新エピソードのエントリを追加する
 5. summary を Planner Agent の `recent_episodes` に使える形式で保持する
-6. 必要に応じて updates.json の description 生成素材として使えるようにする
+6. updates.json の更新内容を生成する
+7. 必要に応じて updates.json の description 生成素材として使えるようにする
 
 ## 入力
-episode_json: {episode_json}
+scenario_output: {scenario_output}
 current_manifest: {manifest_json}
+
+## 主な変換規則
+- `episodeId` -> 正式JSONの `id`
+- `textBlocks` -> 正式JSONの `text`
+- `characters` -> 正式JSONの `characters`
+- `characters.role` / `characters.importance` を読んで `featuredHeroine` / `supportHeroines` / `otherCharacters` を内部正規化してよい
+- `imageRequirements` は唯一の画像仕様入力とし、そこから `sceneImage` / `background` / 制作指示メタデータを生成する
+- `writerComment` は内部レビュー用とし、正式 episode JSON には保存しない
 
 ## episodes.json マニフェスト形式
 [
@@ -634,8 +665,10 @@ current_manifest: {manifest_json}
 
 ## 出力
 {
-  "validated_episode": { <整形済みエピソードJSON> },
+  "normalized_story_data": { <人物役割などを正規化した内部データ> },
+  "validated_episode": { <正式保存用に整形済みのエピソードJSON> },
   "updated_manifest": [ <更新済みmanifest> ],
+  "updated_updates_json": [ <更新済みupdates.json> ],
   "validation_errors": [],
   "summary": "<このエピソードの1行サマリー>"
 }
@@ -655,6 +688,7 @@ current_manifest: {manifest_json}
 - [ ] updates.json が更新済み（ユーザー向け更新履歴）
 - [ ] 画像ファイルが assets/images/ の正しいパスに配置済み
 - [ ] Consistency Agent のチェックが passed: true
+- [ ] Data Agent の `updated_manifest` と `updated_updates_json` を受領済み
 
 ## 公開手順（すべて成功した場合のみ次に進む）
 1. git add <変更ファイル>
@@ -666,7 +700,11 @@ current_manifest: {manifest_json}
 - どの工程で失敗しても中断する
 - 前日の公開状態を維持する
 - エラーログを保存する
-- updates.json は更新しない
+- push に失敗した場合、公開中の updates.json は変更されない
+
+## 役割上の注意
+- Publisher Agent は `updates.json` の内容を編集しない
+- Publisher Agent は更新済み成果物を受け取り、公開処理と公開確認のみ担当する
 
 ## 出力
 {
